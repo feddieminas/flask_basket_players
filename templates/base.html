@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}" type="text/css">
+</head>
+
+<body id="bg-img">
+    <header>
+        <nav>
+            <div class="nav-wrapper deep-orange accent-2">
+                 <a href="" class="brand-logo">My Basketball Players</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="{{ url_for('get_username') }}"><i class="material-icons left">person</i>Guest</a></li>
+            </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+    {% block content %} {% endblock %}
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+        });
+    </script>
+</body>
+</html>
