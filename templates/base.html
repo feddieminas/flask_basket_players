@@ -10,7 +10,7 @@
     <header>
         <nav>
             <div class="nav-wrapper deep-orange accent-2">
-                 <a href="" class="brand-logo">My Basketball Players</a>
+                 <a href="{{ url_for('get_list') }}" class="brand-logo">My Basketball Players</a>
             <ul class="right hide-on-med-and-down">
                 <li><a href="{{ url_for('get_username') }}"><i class="material-icons left">person</i>Guest</a></li>
             </ul>
@@ -26,6 +26,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
+            $('select').material_select();
+            $('input#disc1_rate, input#disc2_rate, input#disc3_rate, input#vp_time').characterCounter();
         });
     </script>
 </body>

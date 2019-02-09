@@ -7,7 +7,12 @@
     background-size: cover;   
 }
 
+.opaqueoverlay {
+    background-color: rgba(224, 224, 224, 0.19);
+}
 
-input {
+h4, input, h6 {
     color:white;
 }
+
+

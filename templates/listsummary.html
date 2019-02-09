@@ -1,0 +1,10 @@
+{% extends 'base.html' %} 
+{% block content %} 
+
+<div class="valign-wrapper">
+    <h4>List Summary</h4>
+    <a class="waves-effect waves-light btn"><i class="material-icons right">view_list</i>Show</a>
+    <a href="{{ url_for('add_player') }}" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+</div>
+
+{% endblock %}
