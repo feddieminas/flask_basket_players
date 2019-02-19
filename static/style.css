@@ -1,4 +1,10 @@
 
+/*
+nav .brand-logo {
+    font-size: 30px;
+}
+*/
+
 #bg-img {
     background: url("basketball_background.jpg") no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -11,8 +17,9 @@
     background-color: rgba(224, 224, 224, 0.19);
 }
 
-h4, input, h6 {
+h4, input, h6, tr, th, td {
     color:white;
 }
+
 
 
