@@ -1,7 +1,7 @@
 import os
 from flask_bcrypt import Bcrypt
 from collections import Counter
-from flask import Flask, render_template, redirect, request, url_for, session
+from flask import Flask, render_template, redirect, request, url_for, session, json
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 
@@ -80,8 +80,8 @@ def utility_processor():
         avg  = sum / len(list)
         return u'{0:.2f}'.format(avg)
     def format_vp(times,gofor):
-        dictGoforRate = {"brunch": 0.60, "coffee": 0.39, "NA": 0.01}
-        goforResRate = dictGoforRate["NA"] if gofor=="" else dictGoforRate[gofor]
+        dictGoforRate = {"brunch": 0.60, "coffee": 0.34, "street": 0.05}
+        goforResRate = dictGoforRate["street"] if gofor=="" else dictGoforRate[gofor]
         vpCalc = goforResRate + ((times+(1-goforResRate)) / 100) 
         return u'{0:.2f}%'.format(vpCalc*100)
     return dict(format_avg=format_avg, format_vp=format_vp)
@@ -92,12 +92,9 @@ def add_player():
     return render_template("addplayer.html")
 
 
-@app.route('/insert_player', methods=['POST'])
-def insert_player():
-    
-    # Check Values
-    dictCheckVal = { "disc1_rate":request.form["disc1_rate"], "disc2_rate":request.form["disc2_rate"], 
-    "disc3_rate":request.form["disc3_rate"], "vp_time":request.form["vp_time"]}
+def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
+    dictCheckVal = { "disc1_rate":disc1_rate, "disc2_rate":disc2_rate, 
+    "disc3_rate":disc3_rate, "vp_time":vp_time}
     
     for key, val in dictCheckVal.items():
         if val=="":
@@ -114,9 +111,10 @@ def insert_player():
             if adjval>10: adjval=10
                     
         dictCheckVal[key]=int(adjval)
-        
-    # Check Select
-    listCheckDisc = [request.form.get("disc1", ""), request.form.get("disc2", ""), request.form.get("disc3", "")]
+    return dictCheckVal 
+    
+def checkSelects(disc1,disc2,disc3):
+    listCheckDisc = [disc1,disc2,disc3]
     myduplis = [item for item, count in Counter(listCheckDisc).items() if count > 1]
     for itemdp in myduplis:
         counter=0
@@ -128,7 +126,18 @@ def insert_player():
                     counter+=1
 
     dictCheckSel = {"disc1": listCheckDisc[0], "disc2": listCheckDisc[1],"disc3": listCheckDisc[2]}
+    return dictCheckSel
 
+@app.route('/insert_player', methods=['POST'])
+def insert_player():
+    
+    # Check Values
+    dictCheckVal = checkVals(request.form["disc1_rate"], request.form["disc2_rate"], request.form["disc3_rate"], request.form["vp_time"])
+        
+    # Check Select
+    dictCheckSel = checkSelects(request.form.get("disc1", ""),request.form.get("disc2", ""),request.form.get("disc3", ""))
+
+    #Final touches
     for key, val in dictCheckSel.items():
         if dictCheckSel[key]=="": dictCheckVal[key+"_rate"]=""
 
@@ -136,7 +145,9 @@ def insert_player():
     if vp!="" and dictCheckVal["vp_time"]==0:
         dictCheckVal["vp_time"]=1
     elif vp=="" and dictCheckVal["vp_time"]>0:
-        vp="coffee"
+        vp="street"
+    else:
+        pass
 
     mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': request.form["player_name"], 
     'gender': request.form["optGender"], 'birth_region': request.form["optBirthRegion"], 
@@ -154,11 +165,43 @@ def insert_player():
 @app.route('/edit_del_player/<player_id>')
 def edit_del_player(player_id):
     the_player = mongo.db.users_basket_players.find_one({"_id": ObjectId(player_id),'userId':int(session["userID"])})
-    return render_template("editDelplayer.html", player=the_player)
+    disciplines=["points","rebounds","assists","steals","blocks","field_goals","three_points","free_throws"]
+    virtuals=["coffee", "brunch", "street"]
+    return render_template("editDelplayer.html", player=the_player, disciplines=disciplines, virtuals=virtuals)
 
 @app.route('/update_del_player/<player_id>', methods=["POST"])
 def update_del_player(player_id):
-    return redirect(url_for('edit_del_player'))
+    if request.form['action'] == 'edit_action':
+        dictCheckVal = checkVals(request.form["disc1_rate"], request.form["disc2_rate"], request.form["disc3_rate"], request.form["vp_time"])
+        dictCheckSel = checkSelects(request.form.get("disc1", ""),request.form.get("disc2", ""),request.form.get("disc3", ""))
+        
+        #Final touches
+        for key, val in dictCheckSel.items():
+            if dictCheckSel[key]=="": dictCheckVal[key+"_rate"]=""
+    
+        vp=request.form.get("virtualplace", "")
+        if vp!="" and dictCheckVal["vp_time"]==0:
+            dictCheckVal["vp_time"]=1
+        elif vp=="" and dictCheckVal["vp_time"]>0:
+            vp="street"
+        else:
+            pass
+    
+        mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': request.form["player_name"], 
+        'gender': request.form["optGender"], 'birth_region': request.form["optBirthRegion"], 
+        'discipline': {'disc1':[dictCheckSel["disc1"],dictCheckVal["disc1_rate"]], 
+        'disc2':[dictCheckSel["disc2"],dictCheckVal["disc2_rate"]],
+        'disc3':[dictCheckSel["disc3"],dictCheckVal["disc3_rate"]]},
+        'virtual_meet': {'times_see':dictCheckVal["vp_time"], 'go_for':vp}}        
+
+        ubp = mongo.db.users_basket_players
+        ubp.update({'_id': ObjectId(player_id), 'userId': int(session["userID"])},mydictReq)
+        
+    elif request.form['action'] == 'dele_action':
+        mongo.db.users_basket_players.remove({'_id': ObjectId(player_id), 'userId': int(session["userID"])}, {"justOne":True})
+    else:
+        pass
+    return redirect(url_for('get_list'))
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
