@@ -17,9 +17,12 @@ nav .brand-logo {
     background-color: rgba(224, 224, 224, 0.19);
 }
 
-h4, input, h6, tr, th, td {
+h4, input, h6, tr, th, td, p {
     color:white;
 }
 
+label {
+    font-weight: bold;
+}
 
 

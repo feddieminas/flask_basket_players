@@ -13,6 +13,9 @@ app.secret_key = "fmd270584"
 app.config["MONGO_DBNAME"] = 'dcd_basketball'
 app.config["MONGO_URI"] = 'mongodb://root:dcd_basketball1234@ds119049.mlab.com:19049/dcd_basketball'
 
+disciplines=["points","rebounds","assists","steals","blocks","field_goals","three_points","free_throws"]
+virtuals=["coffee", "brunch", "street","na"]
+
 mongo = PyMongo(app) 
 
 @app.route('/')
@@ -60,12 +63,13 @@ def insert_login():
 
 @app.route('/list_summary')
 def get_list():
-
     if "userID" not in session: 
         return redirect(url_for("get_username"))
 
     _ubp=mongo.db.users_basket_players.find({}, {'userId':int(session["userID"])})
     #player_list = [player for player in _ubp]
+    
+    #json file to create and retrieve in js with queue js.. if needed. will check with pagination
     
     return render_template("listsummary.html", user_id=session["userID"], ubp=_ubp)
 
@@ -80,37 +84,55 @@ def utility_processor():
         avg  = sum / len(list)
         return u'{0:.2f}'.format(avg)
     def format_vp(times,gofor):
-        dictGoforRate = {"brunch": 0.60, "coffee": 0.34, "street": 0.05}
-        goforResRate = dictGoforRate["street"] if gofor=="" else dictGoforRate[gofor]
-        vpCalc = goforResRate + ((times+(1-goforResRate)) / 100) 
-        return u'{0:.2f}%'.format(vpCalc*100)
+        dictGoforRate = {"brunch": 0.60, "coffee": 0.28, "street": 0.11, "na": 0.01}
+        goforResRate = dictGoforRate["na"] if gofor=="" else dictGoforRate[gofor]
+        vpCalc = (((goforResRate * times) * 100)/2.5) #3
+        return u'{0:.2f}'.format(vpCalc)
     return dict(format_avg=format_avg, format_vp=format_vp)
 
 
 @app.route('/add_player')
 def add_player():
-    return render_template("addplayer.html")
+    return render_template("addplayer.html", disciplines=disciplines, virtuals=virtuals)
 
+def adjNums(val,adjval):
+    if val[-1]=='0' and len(val)>2:
+        adjval=int(int(adjval.replace(',','.'))/10)
+    elif len(val)<=2:
+        adjval=int(adjval)
+    else:
+        adjval=float(adjval.replace(',','.'))/10
+    return adjval    
 
 def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
     dictCheckVal = { "disc1_rate":disc1_rate, "disc2_rate":disc2_rate, 
     "disc3_rate":disc3_rate, "vp_time":vp_time}
     
     for key, val in dictCheckVal.items():
-        if val=="":
-            adjval = ""
-        else:
-            adjval = val[0] if val[0] in ['+','-'] else '0'
-        adjval = "".join([adjval] + [v for v in val if v.isdigit()])
-        if adjval!="": adjval=int(adjval)
-        if key[:2]=="vp":
-            adjval = 0 if adjval=="" else adjval if adjval<0 else adjval
-            if adjval>100: adjval=100 
-        else:
-            adjval = 5 if adjval=="" else adjval if adjval<0 else adjval
-            if adjval>10: adjval=10
-                    
-        dictCheckVal[key]=int(adjval)
+        try:
+            if val=="":
+                adjval = ""
+            else:
+                adjval = val[0] if val[0] in ['+','-'] else ''
+                adjval = "".join([adjval] + [v for v in val if v.isdigit()])
+                
+                adjvalLen = len(adjval)
+                if (key[:2]=="vp" and adjvalLen>3) or (key[:2]=="di" and adjvalLen>2):
+                    adjval=adjval[:adjvalLen-1] 
+                
+                if adjval!="": 
+                    adjval= adjNums(val,adjval)    
+                
+                #final touch
+                if key[:2]=="vp":
+                    adjval = 0 if adjval=="" else adjval if adjval<0 else adjval
+                    if adjval>20: adjval=20 
+                else:
+                    adjval = 5 if adjval=="" else adjval if adjval<0 else adjval
+                    if adjval>10: adjval=10
+        finally:
+            dictCheckVal[key]=adjval
+        
     return dictCheckVal 
     
 def checkSelects(disc1,disc2,disc3):
@@ -159,14 +181,12 @@ def insert_player():
     ubp = mongo.db.users_basket_players
     ubp.insert_one(mydictReq)
     
-    return redirect(url_for('add_player')) #change it to list summary
+    return redirect(url_for('get_list'))
 
 
 @app.route('/edit_del_player/<player_id>')
 def edit_del_player(player_id):
     the_player = mongo.db.users_basket_players.find_one({"_id": ObjectId(player_id),'userId':int(session["userID"])})
-    disciplines=["points","rebounds","assists","steals","blocks","field_goals","three_points","free_throws"]
-    virtuals=["coffee", "brunch", "street"]
     return render_template("editDelplayer.html", player=the_player, disciplines=disciplines, virtuals=virtuals)
 
 @app.route('/update_del_player/<player_id>', methods=["POST"])
