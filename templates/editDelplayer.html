@@ -105,8 +105,8 @@
                   <label for="AsiaBR">Asia</label>
                   <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
                   <label for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South America"/>
-                  <label for="SABR">South America</label>  
+                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+                  <label for="SABR">South Am.</label>  
                   {% elif player['birth_region']=="America" %}
                   <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
                   <label for="EuropeBR">Europe</label>
@@ -118,8 +118,8 @@
                   <label for="AsiaBR">Asia</label>
                   <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
                   <label for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South America"/>
-                  <label for="SABR">South America</label>                   
+                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+                  <label for="SABR">South Am.</label>                   
                   {% elif player['birth_region']=="Africa" %}
                   <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
                   <label for="EuropeBR">Europe</label>
@@ -131,8 +131,8 @@
                   <label for="AsiaBR">Asia</label>
                   <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
                   <label for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South America"/>
-                  <label for="SABR">South America</label>                  
+                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+                  <label for="SABR">South Am.</label>                  
                   {% elif player['birth_region']=="Asia" %}
                   <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
                   <label for="EuropeBR">Europe</label>
@@ -144,8 +144,8 @@
                   <label for="AsiaBR">Asia</label>
                   <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
                   <label for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South America"/>
-                  <label for="SABR">South America</label>                    
+                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+                  <label for="SABR">South Am.</label>                    
                   {% elif player['birth_region']=="Australia" %}
                   <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
                   <label for="EuropeBR">Europe</label>
@@ -157,8 +157,8 @@
                   <label for="AsiaBR">Asia</label>
                   <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="{{ player['birth_region'] }}" checked/>
                   <label for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South America"/>
-                  <label for="SABR">South America</label>                   
+                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+                  <label for="SABR">South Am.</label>                   
                   {% else %}
                   <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
                   <label for="EuropeBR">Europe</label>
@@ -171,7 +171,7 @@
                   <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
                   <label for="AustraliaBR">Australia</label>  
                   <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="{{ player['birth_region'] }}" checked/>
-                  <label for="SABR">South America</label>                   
+                  <label for="SABR">South Am.</label>                   
                   {% endif %}
           </div>
       </div>
@@ -207,7 +207,7 @@
                   </div>  
               <div class="input-field col s8">
                   <input id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="3" value="{{ player['discipline'][d][1] }}">
-                  <label for="{{ d }}_rate">Rate me from 1-10</label>
+                  <label for="{{ d }}_rate">0-10 { fits one dec. }</label>
                   </div>                   
               </div>       
          </div>
@@ -243,7 +243,7 @@
                   </div>  
               <div class="input-field col s8">
                   <input id="vp_time" name="vp_time" type="text" data-length="4" value="{{ player['virtual_meet']['times_see'] }}">
-                  <label for="vp_time">Times from 0-20</label>
+                  <label for="vp_time">0-20 { fits one dec. }</label>
                   </div>                   
               </div>       
          </div>      

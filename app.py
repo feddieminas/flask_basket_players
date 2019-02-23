@@ -1,9 +1,10 @@
 import os
 from flask_bcrypt import Bcrypt
 from collections import Counter
-from flask import Flask, render_template, redirect, request, url_for, session, json
+from flask import Flask, render_template, redirect, request, url_for, session
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+from bson.json_util import dumps
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -66,10 +67,14 @@ def get_list():
     if "userID" not in session: 
         return redirect(url_for("get_username"))
 
-    _ubp=mongo.db.users_basket_players.find({}, {'userId':int(session["userID"])})
+    #_ubp=mongo.db.users_basket_players.find({}, {'userId':int(session["userID"])})
+    _ubp=mongo.db.users_basket_players.find({'userId':int(session["userID"])})
     #player_list = [player for player in _ubp]
     
-    #json file to create and retrieve in js with queue js.. if needed. will check with pagination
+    _ubpCopy = mongo.db.users_basket_players.find({'userId':int(session["userID"]) }, { "name": 1,"birth_region": 1,"virtual_meet":1,"_id":0 }) #_ubp.clone()
+    with open('static/listChart.json', 'w') as f:
+        f.write(dumps(_ubpCopy))
+        f.close()
     
     return render_template("listsummary.html", user_id=session["userID"], ubp=_ubp)
 
@@ -82,12 +87,12 @@ def utility_processor():
             num=0 if num=="" else float(num)
             sum = sum +num
         avg  = sum / len(list)
-        return u'{0:.2f}'.format(avg)
+        return u'{0:.1f}'.format(avg)
     def format_vp(times,gofor):
         dictGoforRate = {"brunch": 0.60, "coffee": 0.28, "street": 0.11, "na": 0.01}
         goforResRate = dictGoforRate["na"] if gofor=="" else dictGoforRate[gofor]
         vpCalc = (((goforResRate * times) * 100)/2.5) #3
-        return u'{0:.2f}'.format(vpCalc)
+        return u'{0:.1f}'.format(vpCalc)
     return dict(format_avg=format_avg, format_vp=format_vp)
 
 
@@ -117,8 +122,12 @@ def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
                 adjval = "".join([adjval] + [v for v in val if v.isdigit()])
                 
                 adjvalLen = len(adjval)
-                if (key[:2]=="vp" and adjvalLen>3) or (key[:2]=="di" and adjvalLen>2):
-                    adjval=adjval[:adjvalLen-1] 
+                if (key[:2]=="vp" and adjvalLen>3):
+                    adjval=adjval[:3] 
+                elif (key[:2]=="di" and adjvalLen>2):
+                    adjval=adjval[:2]
+                else:
+                    pass
                 
                 if adjval!="": 
                     adjval= adjNums(val,adjval)    
@@ -150,6 +159,17 @@ def checkSelects(disc1,disc2,disc3):
     dictCheckSel = {"disc1": listCheckDisc[0], "disc2": listCheckDisc[1],"disc3": listCheckDisc[2]}
     return dictCheckSel
 
+def vpStandalone(vp,dictCheckVal):
+    if vp!="" and dictCheckVal["vp_time"]==0:
+        dictCheckVal["vp_time"]=1
+    elif vp=="" and dictCheckVal["vp_time"]=="":    
+        dictCheckVal["vp_time"]=0
+    elif vp=="" and dictCheckVal["vp_time"]>0:
+        vp="street"
+    else:
+        pass
+    return vp,dictCheckVal 
+
 @app.route('/insert_player', methods=['POST'])
 def insert_player():
     
@@ -164,12 +184,7 @@ def insert_player():
         if dictCheckSel[key]=="": dictCheckVal[key+"_rate"]=""
 
     vp=request.form.get("virtualplace", "")
-    if vp!="" and dictCheckVal["vp_time"]==0:
-        dictCheckVal["vp_time"]=1
-    elif vp=="" and dictCheckVal["vp_time"]>0:
-        vp="street"
-    else:
-        pass
+    vp, dictCheckVal = vpStandalone(vp,dictCheckVal)
 
     mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': request.form["player_name"], 
     'gender': request.form["optGender"], 'birth_region': request.form["optBirthRegion"], 
@@ -200,12 +215,7 @@ def update_del_player(player_id):
             if dictCheckSel[key]=="": dictCheckVal[key+"_rate"]=""
     
         vp=request.form.get("virtualplace", "")
-        if vp!="" and dictCheckVal["vp_time"]==0:
-            dictCheckVal["vp_time"]=1
-        elif vp=="" and dictCheckVal["vp_time"]>0:
-            vp="street"
-        else:
-            pass
+        vp, dictCheckVal = vpStandalone(vp,dictCheckVal)
     
         mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': request.form["player_name"], 
         'gender': request.form["optGender"], 'birth_region': request.form["optBirthRegion"], 

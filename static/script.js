@@ -36,48 +36,243 @@ $(document).ready(function() {
         if (hasNameSurname(nameField)) {
             splitNameSurname=nameField.split(findSplitSeparator(nameField));
             theName = splitNameSurname[0].slice(0,1); //Name
-            theSurname = splitNameSurname[splitNameSurname.length-1].slice(0,8); //Surname
+            theSurname = splitNameSurname[splitNameSurname.length-1].slice(0,10); //Surname 0,8
             nameField = theName + '. ' + theSurname;
         }    
         else {
-            nameField=nameField.slice(0,9);     
+            nameField=nameField.slice(0,12);     //9
         }
         return nameField; 
     }
     
     //in  the end to isert all
     if (!$(".player")[0]){
-        //Do something if class not exists"
+        //Do something if class not exists" visibility hidden
+        $(".visualswitcher").css({'visibility': 'hidden'});
     } else {
-        //"Do something if class exists"
+        //"Do something if class exists" visibility true
+        $(".visualswitcher").css({'visibility': 'visible'});
         
-        //queue()
-            //.defer(d3.json, "temp.json") 
-            //.await(makeGraphs); 
-        
-        //function makeGraphs(error, data) {
-            //console.log(data);
-        //}
+        queue()
+            .defer(d3.json, "static/listChart.json")
+            .await(makeGraphs); 
+                
+            function makeGraphs(error, transData) {
+                //console.log(error); //if empty file throws error
+                //if (!error) {console.log("jsond", transData)}
+                
+                if (error) return;
+                console.log("jsond", transData);
+                
+                let piechartValsJSON = [{"label": "Europe","value": 0}, {"label": "America","value": 0}, {"label": "Africa","value": 0},{"label": "Asia","value": 0}
+                ,{"label": "Australia","value": 0},{"label": "South Am","value": 0}];
+                
+                const tableBodyRows = transData.length;
+                console.log("rows",tableBodyRows);
+                
+                for (let i = 0; i < transData.length; i++) {
+                    let result = transData[i];
+                    //console.log("result", result);
+                    
+                    //pie chart
+                    let birth_region = result["birth_region"];
+                    let index = piechartValsJSON.findIndex(function(d) {
+                        return d.label == birth_region;
+                    });            
+                    piechartValsJSON[index]["value"]+=1;                    
+                    
+                    //bar chart
+                    //barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});
+                    //for(let k in result) {
+                       //console.log("k", k, "result[k]", result[k]);
+                    //}
+                }
+                
+                console.log("piechartValsJSON",piechartValsJSON);
+                
+                let barchartValsJSON = [];
+                $('.player').each(function(i, obj) {
+                    //bar chart
+                    barchartValsJSON.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});  
+                }); 
+                console.log("barchartValsJSON",barchartValsJSON);
+                
+                /*
+                //back up plan the context processor START
+                const dictGoforRate = {"brunch": 0.60, "coffee": 0.28, "street": 0.11, "na": 0.01}
+                let vpCalcs = 0; let gofor = undefined; let times = undefined;
+                
+                const f = d3.format(".1f");
+                
+                let barchartValsJSONBP = [];
+                
+                for (let i = 0; i < transData.length; i++) {
+                    let result = transData[i]["virtual_meet"];
+                    for(let k in result) {
+                        //console.log("k", k, "result[k]", result[k]);
+                        switch(k) {
+                            case "go_for":
+                                gofor = result[k];
+                                break;
+                            case "times_see":
+                                times= result[k];
+                                break;
+                            default:
+                        }
+                    }    
+                    
+                    let goforResRate = dictGoforRate["na"];
+                    if(gofor) {
+                        goforResRate = dictGoforRate[gofor]; 
+                    }
+                    //console.log(goforResRate,times,gofor);
+                    
+                    vpCalcs=parseFloat(f((((goforResRate * times) * 100)/2.5)));
+                    barchartValsJSONBP.push({"name": transData[i]["name"],"value": vpCalcs});
+                }
+                console.log("barchartValsJSONBP",barchartValsJSONBP);
+                
+                $('.player').each(function(i, obj) {
+                    $(this).find("td:eq(8)").text(barchartValsJSONBP[i]["value"]); //or .val
+                });
+                //back up plan the context processor END
+                */
+                
+            }        
 
         //let chartVals= {}; 
         //chartVals.Names = []; chartVals.BR = []; chartVals.VR = [];
         let barchartVals= []; 
-        let piechartVals= [{"label": "Europe","value": 1}, {"label": "Europe","value": 1}, {"label": "America","value": 1},{"label": "Asia","value": 1}
-        ,{"label": "Asia","value": 1},{"label": "Africa","value": 1},{"label": "Africa","value": 1}];
+        let piechartVals= [{"label": "Europe","value": 0}, {"label": "America","value": 0}, {"label": "Africa","value": 0},{"label": "Asia","value": 0}
+        ,{"label": "Australia","value": 0},{"label": "South Am","value": 0}];
+        
+        //let tableBodyRows = 0;
+        const tableBodyRows = $('#myTable tr').length - 1;
+        
         $('.player').each(function(i, obj) {
             //console.log(i,obj); /* $(this) */
+            
+            //pie chart
+            let birth_region = $(this).find("td:eq(3)").text();
+            let index = piechartVals.findIndex(function(d) {
+                return d.label == birth_region;
+            });            
+            piechartVals[index]["value"]+=1;
+            //tableBodyRows+=1;
+            
+            //bar chart
             barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});
+            
             //chartVals.Names.push($(this).find("td:eq(1)").text()); //name
             //chartVals.BR.push($(this).find("td:eq(3)").text()); //birth_region
             //chartVals.VR.push($(this).find("td:eq(8)").text()); //virtual_rate
         });
         
-        //console.log(barchartVals);
+        //console.log("rows",tableBodyRows);
+        console.log("pie",piechartVals);
+        console.log("bar",barchartVals);
+        
         //console.log(chartVals["Names"]);
         //console.log(chartVals["BR"]);
         //console.log(chartVals["VR"]); 
         //console.log(chartVals["VR"][0])
         
+        //Pie Chart
+        const f = d3.format(".1f"); 
+        piechartVals.map(function(item) {
+            item.value = parseFloat(f((item.value/tableBodyRows) *100));
+            item.label = item.label.slice(0,4);
+            if(item.label=="Sout") {item.label="Sa"}
+        });        
+        //console.log("pie",piechartVals);
+        
+        const w = 300;
+        const h = 250;
+        const r = Math.min(w, h) / 2;
+
+        const aColor = [
+            'rgb(15, 117, 186)',
+            'rgb(0, 128, 255)',
+            'rgb(101, 147, 245)',
+            'rgb(115, 194, 251)',
+            'rgb(87, 160, 211)',
+            'rgb(149, 200, 216)'
+        ]
+        
+        /*
+        const aColor = [
+            'rgb(178, 55, 56)',
+            'rgb(197, 75, 76)',
+            'rgb(214, 100, 85)',
+            'rgb(230, 125, 126)',
+            'rgb(239, 183, 182)',
+            'rgb(241, 71, 73)'
+        ]
+        */
+        
+        const thePieChart = d3.select('#birth_region').append("svg:svg")
+            .data([piechartVals])
+            .attr("width", w)
+            .attr("height", h)
+            .attr("class", "piechart")
+            .append("svg:g")
+            .attr("transform", "translate(" + r + "," + r + ")");
+        
+        const pie = d3.layout.pie().value(function(d){return d.value;});
+        
+        // Declare an arc generator function
+        const arc = d3.svg.arc().outerRadius(r);
+        
+        // Select paths, use arc generator to draw
+        let arcs = thePieChart.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+        arcs.append("svg:path")
+            .attr("fill", function(d, i){return aColor[i];})
+            .attr("d", function (d) {return arc(d);})
+        ;
+        
+        // Add the text
+        arcs.append("svg:text")
+            .attr("transform", function(d){
+                d.innerRadius = 90;
+                d.outerRadius = r;
+                return "translate(" + arc.centroid(d) + ")";}
+            )
+            
+            
+            .attr("text-anchor", "middle")
+            
+            .attr("font-size", "12px")
+            .attr("fill", "black")
+            //.attr("class", function(d) {})
+            
+            .transition()
+            .attr("dx", function(d,i) {
+                //console.log(d);
+                if (d.data["label"]=="Aust") {
+                    return "0.3em";
+                }
+                else if (d.data["label"]=="Euro") {
+                    return "-0.6em";
+                }
+                else if (d.data["label"]=="Afri") {
+                    return "0.5em";
+                }
+                return "0em";
+            })
+
+            .attr("dy", function(d) {
+                if (d.data["label"]=="Aust") {
+                    return "0.83em";
+                }
+                return "0.4em";
+            }) 
+            
+            .text( function(d, i) {return piechartVals[i].label.toUpperCase() ;}) //piechartVals[i].value + '%'            
+        ;        
+        
+        ////////////////////////////////////////////////////////////////////
+        
+        //Bar Chart
         valsCount = barchartVals.length;
         if (valsCount>5) {valsCount=5};
         
@@ -97,19 +292,20 @@ $(document).ready(function() {
         const maxVal = barchartVals[valsCount-1]["value"];
         const minVal = barchartVals[0]["value"];
         
-        const margin = { // 5,28,20,70
+        const margin = { 
                 top: 5,
-                right: 28,
+                right: 45,
                 bottom: 0,
-                left: 70
+                left: 105
             };
     
-        //350,250
-        const width = 350 - margin.left - margin.right, height = 250 - margin.top - margin.bottom;    
+        
+        const width = 450 - margin.left - margin.right, height = 250 - margin.top - margin.bottom;    
         
         let svg = d3.select("#virtual_spend_top").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
+            .attr("class", "barchart")
             .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  //(x,y) -> x from left to right, y from top to bottom  
         
@@ -179,5 +375,5 @@ $(document).ready(function() {
             .attr("fill", "white");        
     }
     
-    
 });
+   
