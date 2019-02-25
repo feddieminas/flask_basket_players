@@ -40,7 +40,7 @@
         {% for player in ubp %}
         <tr class="player">
             <td>{{ player['position'] }}</td>            
-            <td>{{ player['name'] }}</td>
+            <td>{{ player['name'].title() }}</td>
             <td>{{ player['gender'] }}</td>
             <td>{{ player['birth_region'] }}</td>    
             <td>{{ player['discipline']['disc1'][0] }}</td>

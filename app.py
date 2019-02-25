@@ -1,10 +1,12 @@
 import os
 from flask_bcrypt import Bcrypt
 from collections import Counter
-from flask import Flask, render_template, redirect, request, url_for, session
+from flask import Flask, render_template, redirect, request, url_for, session, flash
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from bson.json_util import dumps
+import re
+from difflib import ndiff
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -170,6 +172,36 @@ def vpStandalone(vp,dictCheckVal):
         pass
     return vp,dictCheckVal 
 
+def playerHypothSurname(formName):
+    return re.split('. |, |' ' |\t |'' ',formName)[-1]
+
+def lengthOfLongestSubstring(word):
+    left_most_valid = 0
+    longest = 0
+    last_seen = {}
+    for i, letter in enumerate(word):
+        if letter in last_seen:
+            left_most_valid = max(left_most_valid, last_seen[letter] + 1)
+        last_seen[letter] = i
+        longest = max(longest, i - left_most_valid + 1)
+    return longest
+
+def CheckPlayerInDB(ubp,formName):
+    #split name and surname to take the surname
+    SurnameTake = playerHypothSurname(formName)
+    #longest substring of a surname and string of longest substring
+    LongSubstr = SurnameTake[:lengthOfLongestSubstring(SurnameTake)-1]
+    #find regex of a name in database and retrieve
+    playerIfExists = ubp.find_one({'userId':int(session["userID"]), 'name':{'$regex':'.*' + LongSubstr + '.*'}},{ "name": 1,"_id":1 })
+    #ndiff with lower. if zero insert
+    playerNotExists = True
+    if (playerIfExists is not None):
+        countDiffs = sum([i[0] != ' ' for i in ndiff(playerIfExists['name'],formName)]) #if same name and surname it exists so no insert one
+        if countDiffs == 0: 
+            playerNotExists = False
+    return playerNotExists         
+    
+
 @app.route('/insert_player', methods=['POST'])
 def insert_player():
     
@@ -186,7 +218,9 @@ def insert_player():
     vp=request.form.get("virtualplace", "")
     vp, dictCheckVal = vpStandalone(vp,dictCheckVal)
 
-    mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': request.form["player_name"], 
+    formName = request.form["player_name"].lower()
+
+    mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': formName, 
     'gender': request.form["optGender"], 'birth_region': request.form["optBirthRegion"], 
     'discipline': {'disc1':[dictCheckSel["disc1"],dictCheckVal["disc1_rate"]], 
     'disc2':[dictCheckSel["disc2"],dictCheckVal["disc2_rate"]],
@@ -194,7 +228,14 @@ def insert_player():
     'virtual_meet': {'times_see':dictCheckVal["vp_time"], 'go_for':vp}}
     
     ubp = mongo.db.users_basket_players
-    ubp.insert_one(mydictReq)
+    
+    playerNotExists = CheckPlayerInDB(ubp,formName)
+    
+    if playerNotExists == True:
+        ubp.insert_one(mydictReq)
+        msg = "New Player " + formName + " Succesfully Inserted"
+    else:
+        msg = "Player " + formName + " Already Exists. No Inserts Occured"
     
     return redirect(url_for('get_list'))
 
@@ -202,10 +243,10 @@ def insert_player():
 @app.route('/edit_del_player/<player_id>')
 def edit_del_player(player_id):
     the_player = mongo.db.users_basket_players.find_one({"_id": ObjectId(player_id),'userId':int(session["userID"])})
-    return render_template("editDelplayer.html", player=the_player, disciplines=disciplines, virtuals=virtuals)
+    return render_template("editDelplayer.html", player=the_player, disciplines=disciplines, virtuals=virtuals, player_db=the_player["name"])
 
-@app.route('/update_del_player/<player_id>', methods=["POST"])
-def update_del_player(player_id):
+@app.route('/update_del_player/<player_id>/<player_db>', methods=["POST"])
+def update_del_player(player_id, player_db):
     if request.form['action'] == 'edit_action':
         dictCheckVal = checkVals(request.form["disc1_rate"], request.form["disc2_rate"], request.form["disc3_rate"], request.form["vp_time"])
         dictCheckSel = checkSelects(request.form.get("disc1", ""),request.form.get("disc2", ""),request.form.get("disc3", ""))
@@ -216,8 +257,10 @@ def update_del_player(player_id):
     
         vp=request.form.get("virtualplace", "")
         vp, dictCheckVal = vpStandalone(vp,dictCheckVal)
+        
+        formName = request.form["player_name"].lower()
     
-        mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': request.form["player_name"], 
+        mydictReq={'userId': int(session["userID"]), 'position': request.form["optPosition"], 'name': formName, 
         'gender': request.form["optGender"], 'birth_region': request.form["optBirthRegion"], 
         'discipline': {'disc1':[dictCheckSel["disc1"],dictCheckVal["disc1_rate"]], 
         'disc2':[dictCheckSel["disc2"],dictCheckVal["disc2_rate"]],
@@ -225,12 +268,21 @@ def update_del_player(player_id):
         'virtual_meet': {'times_see':dictCheckVal["vp_time"], 'go_for':vp}}        
 
         ubp = mongo.db.users_basket_players
-        ubp.update({'_id': ObjectId(player_id), 'userId': int(session["userID"])},mydictReq)
+        
+        playerNotExists = None
+        if player_db!=formName:
+            playerNotExists = CheckPlayerInDB(ubp,formName)
+        
+        if playerNotExists != False:
+            ubp.update({'_id': ObjectId(player_id), 'userId': int(session["userID"])},mydictReq)
+            msg = "Edit Player " + formName + " Succesfully Updated"
+        else:
+            msg = "Player Name changed to " + formName + " exists. Current Player " + player_db + " not updated"
         
     elif request.form['action'] == 'dele_action':
         mongo.db.users_basket_players.remove({'_id': ObjectId(player_id), 'userId': int(session["userID"])}, {"justOne":True})
-    else:
-        pass
+        msg = "Delete Player " + formName + " Succesfully Deleted"
+        
     return redirect(url_for('get_list'))
 
 if __name__ == '__main__':
