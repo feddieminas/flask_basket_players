@@ -2,57 +2,83 @@
 {% block content %} 
 
 <div class="valign-wrapper">
-    <h4>List Summary</h4>
-    <a class="waves-effect waves-light btn blue"><i class="material-icons right">view_list</i>Show</a>
-    <a href="{{ url_for('add_player') }}" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
+    <h4 class="white-text fw400">List Summary</h4>
+    <a class="waves-effect waves-light btn blue btn_small"><i class="material-icons right">view_list</i>Show</a>
+    <a href="{{ url_for('add_player') }}" class="btn_small btn-floating btn-large waves-effect waves-light"><i class="material-icons">add</i></a>
 </div>
+
+<!-- flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="msg msg-{{ category }} z-depth-3 text-white">{{ message.title() }} </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
 <div class="row visualswitcher">
     <div class="col s12 m5 xl4">
-        <div class="col s6 offset-s2">
-            <p>BIRTH_REGION</p>
+        <div class="col s7 offset-s2">
+            <p class="white-text fw300">BIRTH_REGION <span><i class="material-icons">place</i></span></p>
         </div>
         <div class="col s12 m12" id="birth_region"></div>
     </div>
     <div class="col s12 m7 xl6">
         <div class="col s6 offset-s2">
-            <p>VIRTUAL_SPEND</p>
+            <p class="white-text fw300">VIRTUAL_SPEND &#36</p>
         </div>
         <div class="col s12 m12" id="virtual_spend_top"></div>
     </div>    
 </div>
 
-<div class="visualswitcher" style="overflow-x:auto;">
-    <table id="myTable">
-        <tr>
-              <th>Position</th>
-              <th>Name</th>
-              <th>Gender</th>
-              <th>Birth</th>
-              <th>Disc1</th>
-              <th>Disc2</th>
-              <th>Disc3</th>
-              <th>Disc_Rate</th>
-              <th>Virtual_Spend &#36;</th>
-              <th>Edit/Del</th>
-        </tr>    
-        
-        {% for player in ubp %}
-        <tr class="player">
-            <td>{{ player['position'] }}</td>            
-            <td>{{ player['name'].title() }}</td>
-            <td>{{ player['gender'] }}</td>
-            <td>{{ player['birth_region'] }}</td>    
-            <td>{{ player['discipline']['disc1'][0] }}</td>
-            <td>{{ player['discipline']['disc2'][0] }}</td>
-            <td>{{ player['discipline']['disc3'][0] }}</td>   
-            <td>{{ format_avg(player['discipline']['disc1'][1],player['discipline']['disc2'][1],player['discipline']['disc3'][1]) }}</td>
-            <td>{{ format_vp(player['virtual_meet']['times_see'], player['virtual_meet']['go_for'] ) }}</td>
-            <td><a href="{{ url_for('edit_del_player', player_id=player['_id']) }}" class="btn-floating btn-small orange"><i class="large material-icons">mode_edit</i></a></td> <!--button-->
-        </tr>
-        {% endfor %}
+
+<div id="tbl-container" class="visualswitcher">
     
-    </table>
+    <div id="table-text-header" class="row">
+        <div class="col s9 offset-s2">
+            <p class="white-text fw300">TABLE_SCROLLABLE <span><i class="material-icons">swap_vert</i></span> 
+            <span><i class="material-icons">swap_horiz</i></span></p>
+        </div>    
+    </div>
+    
+    <div id="table-header">
+        <table id="headertable">
+            <tr class="white-text">
+                  <th class="hcell">Pos</th>
+                  <th class="hcell">Name</th>
+                  <th class="hcell">Gender</th>
+                  <th class="hcell">Birth</th>
+                  <th class="hcell">Disc1</th>
+                  <th class="hcell">Disc2</th>
+                  <th class="hcell">Disc3</th>
+                  <th class="hcell">Disc_Rate</th>
+                  <th class="hcell">Virtual &#36;</th>
+                  <th class="hcell">Edit/Del</th>
+            </tr> 
+        </table>
+    </div>    
+    
+    <div id="table-body">
+        <table id="bodytable" class="highlight">
+            <tbody>    
+                {% for player in ubp %}
+                <tr class="player white-text">
+                    <td class="bcell">{{ player['position'] }}</td>            
+                    <td class="bcell">{{ player['name'].title() }}</td>
+                    <td class="bcell">{{ player['gender'] }}</td>
+                    <td class="bcell">{{ player['birth_region'] }}</td>    
+                    <td class="bcell">{{ player['discipline']['disc1'][0] }}</td>
+                    <td class="bcell">{{ player['discipline']['disc2'][0] }}</td>
+                    <td class="bcell">{{ player['discipline']['disc3'][0] }}</td>   
+                    <td class="bcell">{{ format_avg(player['discipline']['disc1'][1],player['discipline']['disc2'][1],player['discipline']['disc3'][1]) }}</td>
+                    <td class="bcell">{{ format_vp(player['virtual_meet']['times_see'], player['virtual_meet']['go_for'] ) }}</td>
+                    <td class="bcell"><a href="{{ url_for('edit_del_player', player_id=player['_id']) }}" class="btn-floating btn-small orange"><i class="large material-icons">mode_edit</i></a></td> <!--button-->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+    
 </div>
 
 {% endblock %}

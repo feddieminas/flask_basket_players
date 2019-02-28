@@ -59,7 +59,8 @@ def insert_login():
                     f.write('\n{0},{1},{2}'.format(userId,user,hpasswd))
                 f.close()
             
-    session["userID"] = userId    
+    session["userID"] = userId 
+    session["msg"] = ""
     
     return redirect(url_for('get_list'))
 
@@ -77,6 +78,12 @@ def get_list():
     with open('static/listChart.json', 'w') as f:
         f.write(dumps(_ubpCopy))
         f.close()
+    
+    #print(session["msg"]) #flash it
+    if session["msg"]!="":
+        category, message = session["msg"]
+        flash(message, category)
+        session["msg"] = ""
     
     return render_template("listsummary.html", user_id=session["userID"], ubp=_ubp)
 
@@ -233,9 +240,9 @@ def insert_player():
     
     if playerNotExists == True:
         ubp.insert_one(mydictReq)
-        msg = "New Player " + formName + " Succesfully Inserted"
+        session["msg"] = ("success", "New " + formName.title() + " Succesfully Inserted")
     else:
-        msg = "Player " + formName + " Already Exists. No Inserts Occured"
+        session["msg"] = ("error", "Player " + formName.title() + " Already Exists. No Inserts Occured")
     
     return redirect(url_for('get_list'))
 
@@ -275,13 +282,13 @@ def update_del_player(player_id, player_db):
         
         if playerNotExists != False:
             ubp.update({'_id': ObjectId(player_id), 'userId': int(session["userID"])},mydictReq)
-            msg = "Edit Player " + formName + " Succesfully Updated"
+            session["msg"] = ("success", "Edit " + formName.title() + " Succesfully Updated")
         else:
-            msg = "Player Name changed to " + formName + " exists. Current Player " + player_db + " not updated"
+            session["msg"] = ("alert", "Player Name changed to " + formName.title() + " exists. Current Player " + player_db + " not updated")
         
     elif request.form['action'] == 'dele_action':
         mongo.db.users_basket_players.remove({'_id': ObjectId(player_id), 'userId': int(session["userID"])}, {"justOne":True})
-        msg = "Delete Player " + formName + " Succesfully Deleted"
+        session["msg"] = ("error", request.form["player_name"].lower().title() + " Succesfully Deleted")
         
     return redirect(url_for('get_list'))
 

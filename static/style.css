@@ -1,9 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700');
 
-/*
+
+/* Base */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    width: 100%;
+}    
+
 nav .brand-logo {
-    font-size: 30px;
+    position: absolute;
+    color: #fff;
+    display: inline-block;
+    font-size: 2.1rem;
+    padding: 0;
+    font-weight: 500;
 }
-*/
 
 #bg-img {
     background: url("basketball_background.jpg") no-repeat center center fixed; 
@@ -17,12 +30,166 @@ nav .brand-logo {
     background-color: rgba(224, 224, 224, 0.19);
 }
 
-h4, input, h6, tr, th, td, p {
-    color:white;
+.btn_small {
+    height: 35px;
+    width: 120px;
+    line-height: 24px;
+    margin: 5px 5px;
+    padding: 0.4em;
 }
 
-label {
-    font-weight: bold;
+.btn-floating.btn-large {
+    width: 56px;
+    height: 45px;
+    padding: 0;
+}
+
+.btn-floating.btn-large i {
+    line-height: 45px;
 }
 
 
+/* Flash Messages */
+
+
+.msg {
+    width:50%;
+    border: 1px solid;
+    padding:10px;
+    margin: 20px 0px;
+}
+
+.msg-error {
+    border-color: #d32f2f;
+    background-color: #ef5350;
+}
+
+.msg-alert {
+    border-color: #ef6c00;
+    background-color: #ff9800;
+}
+
+.msg-success{
+    border-color: #68a968;
+    background-color: #5cb85c;
+}
+
+
+/* List Summary Table */
+
+
+table {
+    border-collapse: collapse;
+}
+
+#tbl-container
+{
+    overflow: hidden;
+}
+
+#table-text-header p {
+    margin-top: 14px;
+    margin-bottom: 10px;
+}
+
+#table-header
+{
+    position: relative;
+}
+
+th {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;  
+}
+
+#table-body
+{
+    overflow: auto;
+}
+
+.hcell
+{
+    text-align: left;
+    height: 40px; 
+    width:120px;
+    min-width: 120px; 
+}
+
+.bcell 
+{
+    text-align: left;
+    min-width: 120px; 
+}
+
+tr:nth-child(even){
+    background-color: rgba(61,61,63,0.18); 
+}
+
+table.highlight>tbody>tr:hover{
+    background-color: rgba(76,175,80,0.6);
+}
+
+
+/* Typography */
+
+
+.fw300 {
+   font-weight:300; 
+}
+
+.fw400 {
+   font-weight:400; 
+}
+
+
+/* Media Queries */
+
+
+@media screen and (max-width:400px) {
+    nav .brand-logo {
+        font-size: 0.975rem; 
+    }
+    
+    .msg {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width:767px) {
+    nav .brand-logo {
+        font-size: 1.28rem; 
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {    
+}    
+
+    
+@media (min-width: 992px) and (max-width: 1800px) {    
+}
+    
+
+
+
+/*
+@media (max-width: 767px) {    
+}
+
+@media (min-width: 768px) and (max-width: 991px) {    
+}    
+    
+@media (min-width: 992px) and (max-width: 1800px) {    
+}
+*/
+
+
+/*
+
+@media screen and (min-width: 768px) and (max-width:800px) {
+     
+}
+
+@media screen and (min-width:1200px) {
+
+}
+*/
