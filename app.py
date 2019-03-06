@@ -182,32 +182,27 @@ def vpStandalone(vp,dictCheckVal):
 def playerHypothSurname(formName):
     return re.split('. |, |' ' |\t |'' ',formName)[-1]
 
-def lengthOfLongestSubstring(word):
-    left_most_valid = 0
-    longest = 0
-    last_seen = {}
-    for i, letter in enumerate(word):
-        if letter in last_seen:
-            left_most_valid = max(left_most_valid, last_seen[letter] + 1)
-        last_seen[letter] = i
-        longest = max(longest, i - left_most_valid + 1)
-    return longest
+def LongestSubstring(Surname,wordLen):
+    mid = (wordLen-1) // 2
+    left = mid // 2
+    right = min(wordLen, max((mid+wordLen) // 2,5))
+    return Surname[left:mid] + Surname[mid:right]
 
 def CheckPlayerInDB(ubp,formName):
     #split name and surname to take the surname
     SurnameTake = playerHypothSurname(formName)
     #longest substring of a surname and string of longest substring
-    LongSubstr = SurnameTake[:lengthOfLongestSubstring(SurnameTake)-1]
+    LongSubstr = LongestSubstring(SurnameTake,len(SurnameTake))
     #find regex of a name in database and retrieve
     playerIfExists = ubp.find_one({'userId':int(session["userID"]), 'name':{'$regex':'.*' + LongSubstr + '.*'}},{ "name": 1,"_id":1 })
     #ndiff with lower. if zero insert
     playerNotExists = True
     if (playerIfExists is not None):
+        print(playerIfExists['name'],formName)
         countDiffs = sum([i[0] != ' ' for i in ndiff(playerIfExists['name'],formName)]) #if same name and surname it exists so no insert one
         if countDiffs == 0: 
             playerNotExists = False
     return playerNotExists         
-    
 
 @app.route('/insert_player', methods=['POST'])
 def insert_player():

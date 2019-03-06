@@ -4,9 +4,9 @@ $(document).ready(function() {
     $('input#disc1_rate, input#disc2_rate, input#disc3_rate, input#vp_time').characterCounter();
     $('#modal_edit').modal(); $('#modal_dele').modal();
 
-    setTableBody();
+    /* setTableBody();
     $(window).resize(setTableBody);
-    $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height());
+    $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height()); */
     
     $("#table-body").scroll(function ()
     {
@@ -357,7 +357,13 @@ $(document).ready(function() {
                     })
                     .attr("fill", "white");                          
                 
-            }        
+                //maybe insert here the below for table since promise
+                
+            }
+            
+        setTableBody();
+        $(window).resize(setTableBody);
+        $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height());    
 
     }
     

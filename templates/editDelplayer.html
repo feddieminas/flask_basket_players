@@ -3,292 +3,291 @@
 
 <div class="opaqueoverlay">
 
-<h4 class="yellow lighten-1 blue-grey-text text-darken-4">Edit/Delete Player</h4>
+  <h4 class="yellow lighten-1 blue-grey-text text-darken-4 fw400">Edit/Delete Player</h4>
 
-  <div class="row">
-    <form action="{{url_for('update_del_player',player_id=player._id, player_db=player_db)}}" method="POST" class="col s12">
+    <div class="row">
+      <form action="{{url_for('update_del_player',player_id=player._id, player_db=player_db)}}" method="POST" class="col s12">
         
-      <div class="row">
-          <div class="input-field col s12">
-              <i class="material-icons prefix white teal-text text-darken-1">person</i>
-              <input id="player_name" name="player_name" type="text" class="white-text validate" value="{{ player['name'].title() }}">
-              <label class="teal-text text-lighten-1" for="player_name">PLAYER NAME</label>
+        <div class="row">
+          <div class="input-field col s12 m9">
+            <i class="material-icons prefix white teal-text text-darken-1 icons_player">person</i>
+            <input id="player_name" name="player_name" type="text" class="white-text validate" value="{{ player['name'].title() }}">
+            <label class="teal-text text-lighten-1" for="player_name">PLAYER NAME</label>
           </div>
-      </div>
+        </div>
       
-      <div class="row">
-          <div class="col s2 valign-wrapper">
-              <div class="row">
-                  <div class="col s4">
-                  <i class="material-icons prefix white">face</i>
-                  </div>  
-                  <div class="col s8">
-                  <h6 class="white-text">Gender</h6>
-                  </div>  
-              </div>       
+        <div class="row">
+          <div class="col s3 m2 valign-wrapper">
+            <div class="row">
+              <div class="col s4">
+                <i class="material-icons prefix white">face</i>
+              </div>  
+              <div class="col s8">
+                <h6 class="white-text fw300">Gender</h6>
+              </div>  
+            </div>       
           </div>
 
           <div class="col s9">
-                  {% if player['gender']=="M" %}
-                  <input name="optGender" type="radio" id="genderM" value="{{ player['gender'] }}" checked/>
-                  <label class="white-text" for="genderM">M</label>
-                  <input name="optGender" type="radio" id="genderF" value="F"/>
-                  <label class="white-text" for="genderF">F</label>
-                  {% else %}
-                  <input name="optGender" type="radio" id="genderM" value="M"/>
-                  <label class="white-text" for="genderM">M</label>
-                  <input name="optGender" type="radio" id="genderF" value="{{ player['gender'] }}" checked/>
-                  <label class="white-text" for="genderF">F</label>
-                  {% endif %}
+            {% if player['gender']=="M" %}
+              <input name="optGender" type="radio" id="genderM" value="{{ player['gender'] }}" checked/>
+              <label class="white-text" for="genderM">M</label>
+              <input name="optGender" type="radio" id="genderF" value="F"/>
+              <label class="white-text" for="genderF">F</label>
+            {% else %}
+              <input name="optGender" type="radio" id="genderM" value="M"/>
+              <label class="white-text" for="genderM">M</label>
+              <input name="optGender" type="radio" id="genderF" value="{{ player['gender'] }}" checked/>
+              <label class="white-text" for="genderF">F</label>
+            {% endif %}
           </div>
-      </div>
+        </div>
 
-      <div class="row">
-          <div class="col s2 valign-wrapper">
-              <div class="row">
-                  <div class="col s4">
-                  <i class="material-icons prefix white">play_arrow</i>
-                  </div>  
-                  <div class="col s8">
-                  <h6 class="white-text" >Position</h6>
-                  </div>  
-              </div>       
+        <div class="row">
+          <div class="col s3 m2 valign-wrapper">
+            <div class="row">
+              <div class="col s4">
+                <i class="material-icons prefix white">play_arrow</i>
+              </div>  
+              <div class="col s8">
+                <h6 class="white-text fw300">Position</h6>
+              </div>  
+            </div>       
           </div>
               
           <div class="col s9">
-                  {% if player['position']=="G" %}
-                  <input class="with-gap" name="optPosition" type="radio" id="guardP" value="{{ player['position'] }}" checked/>
-                  <label class="white-text" for="guardP">Guard</label>
-                  <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="F"/>
-                  <label class="white-text" for="forwardP">Forward</label>
-                  <input class="with-gap" name="optPosition" type="radio" id="centerP" value="C"/>
-                  <label class="white-text" for="centerP">Center</label>
-                  {% elif player['position']=="F" %}
-                  <input class="with-gap" name="optPosition" type="radio" id="guardP" value="G"/>
-                  <label class="white-text" for="guardP">Guard</label>
-                  <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="{{ player['position'] }}" checked/>
-                  <label class="white-text" for="forwardP">Forward</label>
-                  <input class="with-gap" name="optPosition" type="radio" id="centerP" value="C"/>
-                  <label class="white-text" for="centerP">Center</label>                  
-                  {% else %}
-                  <input class="with-gap" name="optPosition" type="radio" id="guardP" value="G"/>
-                  <label class="white-text" for="guardP">Guard</label>
-                  <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="F"/>
-                  <label class="white-text" for="forwardP">Forward</label>
-                  <input class="with-gap" name="optPosition" type="radio" id="centerP" value="{{ player['position'] }}" checked/>
-                  <label class="white-text" for="centerP">Center</label>                  
-                  {% endif %}
+            {% if player['position']=="G" %}
+              <input class="with-gap" name="optPosition" type="radio" id="guardP" value="{{ player['position'] }}" checked/>
+              <label class="white-text" for="guardP">Guard</label>
+              <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="F"/>
+              <label class="white-text" for="forwardP">Forward</label>
+              <input class="with-gap" name="optPosition" type="radio" id="centerP" value="C"/>
+              <label class="white-text" for="centerP">Center</label>
+            {% elif player['position']=="F" %}
+              <input class="with-gap" name="optPosition" type="radio" id="guardP" value="G"/>
+              <label class="white-text" for="guardP">Guard</label>
+              <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="{{ player['position'] }}" checked/>
+              <label class="white-text" for="forwardP">Forward</label>
+              <input class="with-gap" name="optPosition" type="radio" id="centerP" value="C"/>
+              <label class="white-text" for="centerP">Center</label>                  
+            {% else %}
+              <input class="with-gap" name="optPosition" type="radio" id="guardP" value="G"/>
+              <label class="white-text" for="guardP">Guard</label>
+              <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="F"/>
+              <label class="white-text" for="forwardP">Forward</label>
+              <input class="with-gap" name="optPosition" type="radio" id="centerP" value="{{ player['position'] }}" checked/>
+              <label class="white-text" for="centerP">Center</label>                  
+            {% endif %}
           </div>
-      </div>
+        </div>
 
-      <div class="row">
-          <div class="col s2 valign-wrapper">
-              <div class="row">
-                  <div class="col s4">
-                  <i class="material-icons prefix white">place</i>
-                  </div>  
-                  <div class="col s8">
-                  <h6 class="white-text" >Birth Reg.</h6>
-                  </div>  
-              </div>       
+        <div class="row" style="margin-bottom:25px;">
+          <div class="col s3 m2 valign-wrapper">
+            <div class="row">
+              <div class="col s4">
+                <i class="material-icons prefix white">place</i>
+              </div>  
+              <div class="col s8">
+                <h6 class="white-text fw300" >Birth Reg.</h6>
+              </div>  
+            </div>       
           </div>
               
           <div class="col s9">
-                  {% if player['birth_region']=="Europe" %}
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="{{ player['birth_region'] }}" checked/>
-                  <label class="white-text" for="EuropeBR">Europe</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
-                  <label class="white-text" for="AmericaBR">America</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
-                  <label class="white-text" for="AfricaBR">Africa</label> 
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
-                  <label class="white-text" for="AsiaBR">Asia</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
-                  <label class="white-text" for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
-                  <label class="white-text" for="SABR">South Am.</label>  
-                  {% elif player['birth_region']=="America" %}
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
-                  <label class="white-text" for="EuropeBR">Europe</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="{{ player['birth_region'] }}" checked/>
-                  <label class="white-text" for="AmericaBR">America</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
-                  <label class="white-text" for="AfricaBR">Africa</label> 
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
-                  <label class="white-text" for="AsiaBR">Asia</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
-                  <label class="white-text" for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
-                  <label class="white-text" for="SABR">South Am.</label>                   
-                  {% elif player['birth_region']=="Africa" %}
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
-                  <label class="white-text" for="EuropeBR">Europe</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
-                  <label class="white-text" for="AmericaBR">America</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="{{ player['birth_region'] }}" checked/>
-                  <label class="white-text" for="AfricaBR">Africa</label> 
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
-                  <label class="white-text" for="AsiaBR">Asia</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
-                  <label class="white-text" for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
-                  <label class="white-text" for="SABR">South Am.</label>                  
-                  {% elif player['birth_region']=="Asia" %}
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
-                  <label class="white-text" for="EuropeBR">Europe</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
-                  <label class="white-text" for="AmericaBR">America</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
-                  <label class="white-text" for="AfricaBR">Africa</label> 
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="{{ player['birth_region'] }}" checked/>
-                  <label class="white-text" for="AsiaBR">Asia</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
-                  <label class="white-text" for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
-                  <label class="white-text" for="SABR">South Am.</label>                    
-                  {% elif player['birth_region']=="Australia" %}
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
-                  <label class="white-text" for="EuropeBR">Europe</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
-                  <label class="white-text" for="AmericaBR">America</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
-                  <label class="white-text" for="AfricaBR">Africa</label> 
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
-                  <label class="white-text" for="AsiaBR">Asia</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="{{ player['birth_region'] }}" checked/>
-                  <label class="white-text" for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
-                  <label class="white-text" for="SABR">South Am.</label>                   
-                  {% else %}
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
-                  <label class="white-text" for="EuropeBR">Europe</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
-                  <label class="white-text" for="AmericaBR">America</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
-                  <label class="white-text" for="AfricaBR">Africa</label> 
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
-                  <label class="white-text" for="AsiaBR">Asia</label>
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
-                  <label class="white-text" for="AustraliaBR">Australia</label>  
-                  <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="{{ player['birth_region'] }}" checked/>
-                  <label class="white-text" for="SABR">South Am.</label>                   
-                  {% endif %}
+            {% if player['birth_region']=="Europe" %}
+              <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="{{ player['birth_region'] }}" checked/>
+              <label class="white-text" for="EuropeBR">Europe</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
+              <label class="white-text" for="AmericaBR">America</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
+              <label class="white-text" for="AfricaBR">Africa</label> 
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
+              <label class="white-text" for="AsiaBR">Asia</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
+              <label class="white-text" for="AustraliaBR">Australia</label>  
+              <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+              <label class="white-text" for="SABR">South Am.</label>  
+            {% elif player['birth_region']=="America" %}
+              <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
+              <label class="white-text" for="EuropeBR">Europe</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="{{ player['birth_region'] }}" checked/>
+              <label class="white-text" for="AmericaBR">America</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
+              <label class="white-text" for="AfricaBR">Africa</label> 
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
+              <label class="white-text" for="AsiaBR">Asia</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
+              <label class="white-text" for="AustraliaBR">Australia</label>  
+              <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+              <label class="white-text" for="SABR">South Am.</label>                   
+            {% elif player['birth_region']=="Africa" %}
+              <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
+              <label class="white-text" for="EuropeBR">Europe</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
+              <label class="white-text" for="AmericaBR">America</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="{{ player['birth_region'] }}" checked/>
+              <label class="white-text" for="AfricaBR">Africa</label> 
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
+              <label class="white-text" for="AsiaBR">Asia</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
+              <label class="white-text" for="AustraliaBR">Australia</label>  
+              <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+              <label class="white-text" for="SABR">South Am.</label>                  
+            {% elif player['birth_region']=="Asia" %}
+              <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
+              <label class="white-text" for="EuropeBR">Europe</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
+              <label class="white-text" for="AmericaBR">America</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
+              <label class="white-text" for="AfricaBR">Africa</label> 
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="{{ player['birth_region'] }}" checked/>
+              <label class="white-text" for="AsiaBR">Asia</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
+              <label class="white-text" for="AustraliaBR">Australia</label>  
+              <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+              <label class="white-text" for="SABR">South Am.</label>                    
+            {% elif player['birth_region']=="Australia" %}
+              <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
+              <label class="white-text" for="EuropeBR">Europe</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
+              <label class="white-text" for="AmericaBR">America</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
+              <label class="white-text" for="AfricaBR">Africa</label> 
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
+              <label class="white-text" for="AsiaBR">Asia</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="{{ player['birth_region'] }}" checked/>
+              <label class="white-text" for="AustraliaBR">Australia</label>  
+              <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="South Am"/>
+              <label class="white-text" for="SABR">South Am.</label>                   
+            {% else %}
+              <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
+              <label class="white-text" for="EuropeBR">Europe</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America"/>
+              <label class="white-text" for="AmericaBR">America</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AfricaBR" value="Africa"/>
+              <label class="white-text" for="AfricaBR">Africa</label> 
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AsiaBR" value="Asia"/>
+              <label class="white-text" for="AsiaBR">Asia</label>
+              <input class="with-gap" name="optBirthRegion" type="radio" id="AustraliaBR" value="Australia"/>
+              <label class="white-text" for="AustraliaBR">Australia</label>  
+              <input class="with-gap" name="optBirthRegion" type="radio" id="SABR" value="{{ player['birth_region'] }}" checked/>
+              <label class="white-text" for="SABR">South Am.</label>                   
+            {% endif %}
           </div>
-      </div>
+        </div>
       
       {% set discs=[('One','disc1'),('Two','disc2'),('Three','disc3')] %}
       
       {% for k,d in discs %}
       
-      <div class="row">  
-        <div class="input-field col s6">
-            <i class="material-icons prefix white">poll</i>
-            <select id="{{ d }}" name="{{ d }}" class="white-text">>
-                <option value="" disabled selected>Choose Discipline {{ k }}</option>
-                {% for disc in disciplines %}
-                    {% if disc == player['discipline'][d][0] %}
-                    <option value="{{player['discipline'][d][0]}}" selected>{{player['discipline'][d][0] | upper}}</option>
-                    {% else %}
-                    <option value="{{ disc }}">{{disc | upper}}</option>
-                    {% endif %}
-                {% endfor %}
+        <div class="row select-form-margin_player">  
+          <div class="input-field col s7 m6">
+            <i class="material-icons prefix white icons_player">poll</i>
+            <select id="{{ d }}" name="{{ d }}" class="white-text">
+              <option value="" disabled selected>Choose Disc. {{ k }}</option>
+              {% for disc in disciplines %}
+                {% if disc == player['discipline'][d][0] %}
+                  <option value="{{player['discipline'][d][0]}}" selected>{{player['discipline'][d][0] | upper}}</option>
+                {% else %}
+                  <option value="{{ disc }}">{{disc | upper}}</option>
+                {% endif %}
+              {% endfor %}
             </select>
             {% if loop.index == 1 %}
-            <label class="black-text"><span class="blue darken-4 white-text">Favorite Disciplines</span></label>
+              <label class="black-text"><span class="blue darken-4 white-text fw400 select-form-label-h_player">Favorite Disciplines</span></label>
             {% endif %}
-        </div>
+          </div>
 
-        <div class="col s4 valign-wrapper">
-              <div class="row">
-                  <div class="col s4">
-                  <div class="row"> 
-                      <div class="col s10 offset-s2">
-                         <h6 class="white-text">Rating</h6>
-                      </div>
+          <div class="col s5 m3 valign-wrapper">
+            <div class="row">
+              <div class="col s5 m4">
+                <div class="row"> 
+                  <div class="col s10 offset-s2">
+                    <h6 class="white-text fw300">Rating</h6>
                   </div>
-                  </div>  
-              <div class="input-field col s8">
-                  <input class="white-text" id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="3" value="{{ player['discipline'][d][1] }}">
-                  <label class="white-text" for="{{ d }}_rate">0-10 { fits one dec. }</label>
-                  </div>                   
-              </div>       
-         </div>
-      </div>
+                </div>
+              </div>  
+              <div class="input-field col s7 m8">
+                <input class="white-text" id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="3" value="{{ player['discipline'][d][1] }}">
+                <label class="white-text rate-vt-form-label_player" for="{{ d }}_rate">0-10 | fits one dec.</label>
+              </div>                   
+            </div>       
+          </div>
+        </div>
       
       {% endfor %}
       
-      
-      <div class="row"> 
-        <div class="input-field col s6">
-            <i class="material-icons prefix white">pin_drop</i>
+        <div class="row select-form-margin_player"> 
+          <div class="input-field col s7 m6">
+            <i class="material-icons prefix white icons_player">pin_drop</i>
             <select id="virtualplace" name="virtualplace" class="white-text">>
-                <option value="" disabled selected>Choose Virtual Place</option>
+              <option value="" disabled selected>Choose Virtual Place</option>
                 {% for v in virtuals %}
                   {% if v == player['virtual_meet']['go_for'] %} 
-                  <option value="{{player['virtual_meet']['go_for']}}" selected>{{player['virtual_meet']['go_for'] | upper}}</option>
+                    <option value="{{player['virtual_meet']['go_for']}}" selected>{{player['virtual_meet']['go_for'] | upper}}</option>
                   {% else %}
-                  <option value="{{ v }}">{{v | upper}}</option>
+                    <option value="{{ v }}">{{v | upper}}</option>
                   {% endif %}
                 {% endfor %}
             </select>
-            <label class="black-text"><span class="deep-orange darken-4 white-text">On a Virtual Time, a Place to Go For</span></label>
-        </div>      
-      
-        <div class="col s4 valign-wrapper">
-              <div class="row">
-                  <div class="col s4">
-                  <div class="row"> 
-                      <div class="col s10 offset-s2">
-                         <h6 class="white-text">Virtual Times</h6>
-                      </div>
+            <label class="black-text"><span class="deep-orange darken-4 white-text fw400 select-form-label-h_player">On a Virtual Time, a Place to Go For</span></label>
+          </div>      
+        
+          <div class="col s5 m3 valign-wrapper">
+            <div class="row">
+              <div class="col s5 m4">
+                <div class="row"> 
+                  <div class="col s10 offset-s2">
+                    <h6 class="white-text fw300">Virtual Times</h6>
                   </div>
-                  </div>  
-              <div class="input-field col s8">
-                  <input class="white-text" id="vp_time" name="vp_time" type="text" data-length="4" value="{{ player['virtual_meet']['times_see'] }}">
-                  <label class="white-text" for="vp_time">0-20 { fits one dec. }</label>
-                  </div>                   
-              </div>       
-         </div>      
-      </div>   
-      
-      <div class="row">
-        <div class="col s3">      
-          <button data-target="modal_edit" class="btn modal-trigger waves-effect waves-light orange darken-1">Edit Player
+                </div>
+              </div>  
+              <div class="input-field col s7 m8">
+                <input class="white-text" id="vp_time" name="vp_time" type="text" data-length="4" value="{{ player['virtual_meet']['times_see'] }}">
+                <label class="white-text rate-vt-form-label_player" for="vp_time">0-20 | fits one dec.</label>
+              </div>                   
+            </div>       
+          </div>      
+        </div>   
+        
+        <div class="row">
+          <div class="col s6 m4 l3 xl3">      
+            <button data-target="modal_edit" class="btn btn_player modal-trigger waves-effect waves-light orange darken-1">Edit Player
               <i class="material-icons right">edit</i>  
-          </button>
-        
-          <div id="modal_edit" class="modal">
-            <div class="modal-content">
-              <h5>Do you want to Edit the player?</h5>
+            </button>
+          
+            <div id="modal_edit" class="modal">
+              <div class="modal-content">
+                <h5>Do you want to <span class="green white-text">Edit</span> the player?</h5>
+              </div>
+              <div class="modal-footer">
+                <button class="btn waves-effect waves-light green" type="submit" name="action" value="edit_action">Yes</button>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat red lighten-2">No</a>
+                <a href="{{ url_for('get_list') }}" class="waves-effect waves-green btn-flat brown lighten-2">List</a>
+              </div>
             </div>
-            <div class="modal-footer">
-              <button class="btn waves-effect waves-light green" type="submit" name="action" value="edit_action">Yes</button>
-              <a class="modal-action modal-close waves-effect waves-green btn-flat red lighten-2">No</a>
-              <a href="{{ url_for('get_list') }}" class="waves-effect waves-green btn-flat brown lighten-2">Back to List</a>
+          </div>  
+  
+          <div class="col s6 m4 l3 xl3">      
+            <button data-target="modal_dele" class="btn btn_player modal-trigger waves-effect waves-light red">Del Player
+                <i class="material-icons right">delete</i>  
+            </button>
+          
+            <div id="modal_dele" class="modal">
+              <div class="modal-content">
+                <h5>Do you want to <span class="yellow darken-3 white-text">Delete</span> the player?</h5>
+              </div>
+              <div class="modal-footer">
+                <button class="btn waves-effect waves-light yellow darken-3" type="submit" name="action" value="dele_action">Yes</button>
+                <a class="modal-action modal-close waves-effect waves-green btn-flat red lighten-2">No</a>
+                <a href="{{ url_for('get_list') }}" class="waves-effect waves-green btn-flat brown lighten-2">List</a>
+              </div>
             </div>
-          </div>
-        </div>  
+          </div>         
+        </div> 
 
-        <div class="col s4">      
-          <button data-target="modal_dele" class="btn modal-trigger waves-effect waves-light red">Delete Player
-              <i class="material-icons right">delete</i>  
-          </button>
-        
-          <div id="modal_dele" class="modal">
-            <div class="modal-content">
-              <h5>Do you want to Delete the player?</h5>
-            </div>
-            <div class="modal-footer">
-              <button class="btn waves-effect waves-light yellow darken-2" type="submit" name="action" value="dele_action">Yes</button>
-              <a class="modal-action modal-close waves-effect waves-green btn-flat red">No</a>
-              <a href="{{ url_for('get_list') }}" class="waves-effect waves-green btn-flat brown lighten-2">Back to List</a>
-            </div>
-          </div>
-        </div>         
-      </div> 
-
-    </form>
-  </div>
+      </form>
+    </div>
 
 </div>
 
