@@ -1,30 +1,33 @@
 {% extends 'base.html' %} 
 {% block content %} 
-
-  <h4>My Credentials</h4>
   
-  <div class="row">
+  <div class="login-container">
+    
     <form action="{{ url_for('insert_login') }}" method="POST" class="col s12">
-        
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="username" name="username" type="text" class="validate">
-          <label for="username">Username</label>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="password" type="password" name="password" class="validate">
-          <label for="password">Password</label>
-        </div>
-      </div>
-      
-      <div class="row">
-          <button class="btn waves-effect waves-light" type="submit" name="action">Login
-                <i class="material-icons right">add</i>
-          </button>
-      </div> 
+    
+      <ul class="flex-outer">
+        <p class="teal lighten-1 white-text fw300">My Credentials</p>
+        <li class="input-field">
+          <input id="username" name="username" type="text" class="white-text validate">
+          <label class="fw300" for="username">Username</label>
+        </li>
+        <li class="input-field">
+          <input id="password" type="password" name="password" class="white-text validate">
+          <label class="fw300" for="password">Password</label>
+        </li>
+        <li>
+          <!-- Login if no userID number exists, while logout if userID is a number (a guest already logged in) -->
+          {% if userId is none %}
+          <button class="btn waves-effect waves-light" type="submit" name="action" value="login_action">Login
+            <i class="material-icons right">add</i>
+          </button>           
+          {% else %}
+          <button class="btn waves-effect waves-light red" type="submit" name="action" value="logout_action">Logout
+            <i class="material-icons right">exit_to_app</i>
+          </button>         
+          {% endif %}
+        </li>
+      </ul>    
       
     </form>
   </div>

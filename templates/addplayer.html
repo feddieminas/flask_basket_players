@@ -5,9 +5,10 @@
   
   <h4 class="blue white-text fw400">New Player</h4>
   
-    <div class="row">
+    <div>
       <form action="{{ url_for('insert_player') }}" method="POST" class="col s12">
-          
+        
+        <!-- NAME -->  
         <div class="row">
           <div class="input-field col s12 m9">
             <i class="material-icons prefix white teal-text text-darken-1 icons_player">person</i>
@@ -16,7 +17,7 @@
           </div>
         </div>
         
-        
+        <!-- GENDER --> 
         <div class="row">
           <div class="col s3 m2 valign-wrapper">
             <div class="row">
@@ -37,7 +38,7 @@
           </div>
         </div>
   
-  
+        <!-- POSITION --> 
         <div class="row">
           <div class="col s3 m2 valign-wrapper">
             <div class="row">
@@ -60,7 +61,7 @@
           </div>
         </div>
   
-  
+        <!-- BIRTH REGION --> 
         <div class="row" style="margin-bottom:25px;">
           <div class="col s3 m2 valign-wrapper">
             <div class="row">
@@ -89,6 +90,8 @@
           </div>
         </div>
 
+      <!-- DISCIPLINES --> 
+      
       {% set discs=[('One','disc1'),('Two','disc2'),('Three','disc3')] %}
       
       {% for k,d in discs %}      
@@ -126,6 +129,7 @@
         
       {% endfor %}
   
+      <!-- VIRTUALS --> 
         <div class="row select-form-margin_player"> 
           <div class="input-field col s7 m6">
             <i class="material-icons prefix white icons_player">pin_drop</i>
@@ -155,6 +159,7 @@
           </div>      
         </div> 
   
+      <!-- ADD BTN --> 
         <div class="row">
           <button class="btn btn_player waves-effect waves-light blue" type="submit" name="action">Add Player in List
             <i class="material-icons right">playlist_add</i>

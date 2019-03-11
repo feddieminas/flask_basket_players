@@ -1,13 +1,11 @@
 $(document).ready(function() {
+    // materialize js functionalities
     $(".button-collapse").sideNav();
     $('select').material_select();
     $('input#disc1_rate, input#disc2_rate, input#disc3_rate, input#vp_time').characterCounter();
     $('#modal_edit').modal(); $('#modal_dele').modal();
-
-    /* setTableBody();
-    $(window).resize(setTableBody);
-    $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height()); */
     
+    // horizontal table scrolling relative to window's width 
     $("#table-body").scroll(function ()
     {
         
@@ -35,6 +33,7 @@ $(document).ready(function() {
         $("#table-header").offset({ left: (-1*this.scrollLeft)+theChange }); 
     });
     
+    // set table height to be resized thus do not fall out the container
     function setTableBody()
     {
         $("#table-body").height($("#tbl-container").height() - $("#table-header").height());
@@ -42,6 +41,9 @@ $(document).ready(function() {
 
     ////////////////////////////////////////////////
     
+    // As a single input of Name is provided, need to check whether a guest will insert both name or surname
+    // or only the surname. Apart from a whitespace or a tab, we include the possibility of separate them with dot and comma 
+    // (ex. michael jordan - michael.jordan - michael,jordan). 
     function hasNameSurname(s) {return /[,.\s\/]/g.test(s);}
     
     function findSplitSeparator(s) {
@@ -49,317 +51,233 @@ $(document).ready(function() {
         return match[0];
     }
     
-    function fitName(nameField) {
-        nameField = nameField.replace(/^\s+/,""); //left trim
-        nameField = nameField.replace(/\s$/, "");  //right trim
+    function fitName(nameField) { 
+        //trim leftwise
+        nameField = nameField.replace(/^\s+/,""); 
+        //trim rightwise
+        nameField = nameField.replace(/\s$/, "");
         if (hasNameSurname(nameField)) {
             splitNameSurname=nameField.split(findSplitSeparator(nameField));
-            theName = splitNameSurname[0].slice(0,1); //Name
-            theSurname = splitNameSurname[splitNameSurname.length-1].slice(0,10); //Surname 0,8
+            theName = splitNameSurname[0].slice(0,1);
+            theSurname = splitNameSurname[splitNameSurname.length-1].slice(0,10); 
             nameField = theName + '. ' + theSurname;
         }    
         else {
-            nameField=nameField.slice(0,12);     //9
+            nameField=nameField.slice(0,12);     
         }
-        return nameField; 
+        return nameField; // max name field characters will be 12 
     }
-    
 
     if (!$(".player")[0]){
-        //Do something if class not exists" visibility hidden
+        /* If no any player exists, hide the section body of charts and table. 
+        At the same time insert a pulse to the button of adding a player to instruct a guest */        
         $(".visualswitcher").css({'visibility': 'hidden'});
         $('.btn-floating.btn-large').addClass('pulse');
         
     } else {
-        //"Do something if class exists" visibility true
+        /* If any player exists, show the section body of charts and table. 
+        At the same time remove the pulse to the button of adding a player to instruct a guest */
         $(".visualswitcher").css({'visibility': 'visible'});
         $('.btn-floating.btn-large').removeClass('pulse');
+                
+        //// D3 PIE CHART - BIRTH REGION PERCENTAGES - vals through py and jinja  ////        
+                
+        let piechartVals = [{"label": "Europe","value": 0}, {"label": "America","value": 0}, {"label": "Africa","value": 0},{"label": "Asia","value": 0}
+        ,{"label": "Australia","value": 0},{"label": "South Am","value": 0}];
+                
+        const tableBodyRows = transData.length;
+                
+        for (let i = 0; i < transData.length; i++) {
+            let result = transData[i];
+                    
+            let birth_region = result["birth_region"];
+            let index = piechartVals.findIndex(function(d) {
+                return d.label == birth_region;
+            });            
+            piechartVals[index]["value"]+=1;                    
+                    
+        }
+                
+        const f = d3.format(".1f"); 
+        piechartVals.map(function(item) {
+            item.value = parseFloat(f((item.value/tableBodyRows) *100));
+            item.label = item.label.slice(0,4);
+            if(item.label=="Sout") {item.label="Sa"}
+        });        
+        piechartVals = piechartVals.filter(function(d) {
+            return d.value>0;
+        });
+                
+        const w = 300;
+        const h = 250;
+        const r = Math.min(w, h) / 2;
         
-        queue()
-            .defer(d3.json, "static/listChart.json")
-            .await(makeGraphs); 
+        const aColor = [
+            'rgb(15, 117, 186)',
+            'rgb(0, 128, 255)',
+            'rgb(101, 147, 245)',
+            'rgb(115, 194, 251)',
+            'rgb(87, 160, 211)',
+            'rgb(149, 200, 216)'
+        ]
                 
-            function makeGraphs(error, transData) {
-                //console.log(error); //if empty file throws error
-                //if (!error) {console.log("jsond", transData)}
+        const thePieChart = d3.select('#birth_region').append("svg:svg")
+            .data([piechartVals])
+            .attr("width", w)
+            .attr("height", h)
+            .attr("class", "piechart")
+            .append("svg:g")
+            .attr("transform", "translate(" + r + "," + r + ")");
                 
-                if (error) return;
-                //console.log("jsond", transData);
+        const pie = d3.layout.pie().value(function(d){return d.value;});
                 
-                let piechartValsJSON = [{"label": "Europe","value": 0}, {"label": "America","value": 0}, {"label": "Africa","value": 0},{"label": "Asia","value": 0}
-                ,{"label": "Australia","value": 0},{"label": "South Am","value": 0}];
+        const arc = d3.svg.arc().outerRadius(r);
                 
-                const tableBodyRows = transData.length;
-                //console.log("rows",tableBodyRows);
+        let arcs = thePieChart.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
                 
-                for (let i = 0; i < transData.length; i++) {
-                    let result = transData[i];
-                    //console.log("result", result);
-                    
-                    //pie chart
-                    let birth_region = result["birth_region"];
-                    let index = piechartValsJSON.findIndex(function(d) {
-                        return d.label == birth_region;
-                    });            
-                    piechartValsJSON[index]["value"]+=1;                    
-                    
-                    //bar chart
-                    //barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});
-                    //for(let k in result) {
-                       //console.log("k", k, "result[k]", result[k]);
-                    //}
+        arcs.append("svg:path")
+            .attr("fill", function(d, i){return aColor[i];})
+            .attr("d", function (d) {return arc(d);});
+                
+        arcs.append("svg:text")
+            .attr("transform", function(d){
+                d.innerRadius = 90;
+                d.outerRadius = r;
+                return "translate(" + arc.centroid(d) + ")";}
+            )
+            .attr("text-anchor", "middle")
+            .attr("font-size", "12px")
+            .attr("fill", "white")
+            .transition()
+            .attr("dx", function(d,i) {
+                if (d.data["label"]=="Aust") {
+                    return "0.3em";
                 }
-                
-                //console.log("piechartValsJSON",piechartValsJSON);
-                
-                //Pie Chart
-                const f = d3.format(".1f"); 
-                piechartValsJSON.map(function(item) {
-                    item.value = parseFloat(f((item.value/tableBodyRows) *100));
-                    item.label = item.label.slice(0,4);
-                    if(item.label=="Sout") {item.label="Sa"}
-                });        
-                //console.log("pie",piechartValsJSON);
-                
-                const w = 300;
-                const h = 250;
-                const r = Math.min(w, h) / 2;
-        
-                const aColor = [
-                    'rgb(15, 117, 186)',
-                    'rgb(0, 128, 255)',
-                    'rgb(101, 147, 245)',
-                    'rgb(115, 194, 251)',
-                    'rgb(87, 160, 211)',
-                    'rgb(149, 200, 216)'
-                ]
-                
-                /*
-                const aColor = [
-                    'rgb(178, 55, 56)',
-                    'rgb(197, 75, 76)',
-                    'rgb(214, 100, 85)',
-                    'rgb(230, 125, 126)',
-                    'rgb(239, 183, 182)',
-                    'rgb(241, 71, 73)'
-                ]
-                */
-                
-                const thePieChart = d3.select('#birth_region').append("svg:svg")
-                    .data([piechartValsJSON])
-                    .attr("width", w)
-                    .attr("height", h)
-                    .attr("class", "piechart")
-                    .append("svg:g")
-                    .attr("transform", "translate(" + r + "," + r + ")");
-                
-                const pie = d3.layout.pie().value(function(d){return d.value;});
-                
-                // Declare an arc generator function
-                const arc = d3.svg.arc().outerRadius(r);
-                
-                // Select paths, use arc generator to draw
-                let arcs = thePieChart.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-                arcs.append("svg:path")
-                    .attr("fill", function(d, i){return aColor[i];})
-                    .attr("d", function (d) {return arc(d);})
-                ;
-                
-                // Add the text
-                arcs.append("svg:text")
-                    .attr("transform", function(d){
-                        d.innerRadius = 90;
-                        d.outerRadius = r;
-                        return "translate(" + arc.centroid(d) + ")";}
-                    )
-                    
-                    
-                    .attr("text-anchor", "middle")
-                    
-                    .attr("font-size", "12px")
-                    .attr("fill", "black")
-                    //.attr("class", function(d) {})
-                    
-                    .transition()
-                    .attr("dx", function(d,i) {
-                        //console.log(d);
-                        if (d.data["label"]=="Aust") {
-                            return "0.3em";
-                        }
-                        else if (d.data["label"]=="Euro") {
-                            return "-0.6em";
-                        }
-                        else if (d.data["label"]=="Afri") {
-                            return "0.5em";
-                        }
-                        return "0em";
-                    })
-        
-                    .attr("dy", function(d) {
-                        if (d.data["label"]=="Aust") {
-                            return "0.83em";
-                        }
-                        return "0.4em";
-                    }) 
-                    
-                    .text( function(d, i) {return piechartValsJSON[i].label.toUpperCase() ;}) //piechartValsJSON[i].value + '%'            
-                ;        
-            
-            ////////////////////////////////////////////////////////////////////                
-                    
-                
-                let barchartValsJSON = [];
-                $('.player').each(function(i, obj) {
-                    //bar chart
-                    barchartValsJSON.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});  
-                }); 
-                //console.log("barchartValsJSON",barchartValsJSON);
-                
-                /*
-                //back up plan the context processor START
-                const dictGoforRate = {"brunch": 0.60, "coffee": 0.28, "street": 0.11, "na": 0.01}
-                let vpCalcs = 0; let gofor = undefined; let times = undefined;
-                
-                const f = d3.format(".1f");
-                
-                let barchartValsJSONBP = [];
-                
-                for (let i = 0; i < transData.length; i++) {
-                    let result = transData[i]["virtual_meet"];
-                    for(let k in result) {
-                        //console.log("k", k, "result[k]", result[k]);
-                        switch(k) {
-                            case "go_for":
-                                gofor = result[k];
-                                break;
-                            case "times_see":
-                                times= result[k];
-                                break;
-                            default:
-                        }
-                    }    
-                    
-                    let goforResRate = dictGoforRate["na"];
-                    if(gofor) {
-                        goforResRate = dictGoforRate[gofor]; 
-                    }
-                    //console.log(goforResRate,times,gofor);
-                    
-                    vpCalcs=parseFloat(f((((goforResRate * times) * 100)/2.5)));
-                    barchartValsJSONBP.push({"name": transData[i]["name"],"value": vpCalcs});
+                else if (d.data["label"]=="Euro") {
+                    return "-0.6em";
                 }
-                console.log("barchartValsJSONBP",barchartValsJSONBP);
+                else if (d.data["label"]=="Afri") {
+                    return "0.5em";
+                }
+                    return "0em";
+                })
+        
+            .attr("dy", function(d) {
+                if (d.data["label"]=="Aust") {
+                    return "0.83em";
+                }
+                    return "0.4em";
+                }) 
+            .text( function(d, i) {return piechartVals[i].label.toUpperCase() ;});        
+
+
+        //// D3 BAR CHART - TOP FIVE PLAYERS GUEST WILLING TO SPEND TIME - vals through html document loaded ////                
                 
-                $('.player').each(function(i, obj) {
-                    $(this).find("td:eq(8)").text(barchartValsJSONBP[i]["value"]); //or .val
-                });
-                //back up plan the context processor END
-                */
+        let barchartVals = [];
+        $('.player').each(function(i, obj) {
+            barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});  
+        }); 
                 
-                //Bar Chart
-                valsCount = barchartValsJSON.length;
-                if (valsCount>5) {valsCount=5};
+        valsCount = barchartVals.length;
+        if (valsCount>5) {valsCount=5};
                 
-                //console.log(valsCount);
+        barchartVals = barchartVals.sort(function (a, b) {
+                return d3.descending(a.value, b.value);
+        }).slice(0,valsCount);
                 
-                barchartValsJSON = barchartValsJSON.sort(function (a, b) {
-                        return d3.descending(a.value, b.value);
-                }).slice(0,valsCount);
+        barchartVals.map(function(item) {
+            item.name = fitName(item.name);
+            if (item.value<=0) {item.value=0}
+        });       
                 
-                barchartValsJSON.map(function(item) {
-                    item.name = fitName(item.name);
-                    //console.log("item", item); 
-                });         
+        const maxVal = barchartVals[valsCount-1]["value"];
+        const minVal = barchartVals[0]["value"];
                 
-                //console.log(barchartValsJSON);
-                
-                const maxVal = barchartValsJSON[valsCount-1]["value"];
-                const minVal = barchartValsJSON[0]["value"];
-                
-                const margin = { 
-                        top: 5,
-                        right: 45,
-                        bottom: 0,
-                        left: 105
-                    };   
+        const margin = { 
+                top: 5,
+                right: 45,
+                bottom: 0,
+                left: 105
+            };   
                     
-                const width = 450 - margin.left - margin.right, height = 250 - margin.top - margin.bottom;    
+        const width = 450 - margin.left - margin.right;
                 
-                let svg = d3.select("#virtual_spend_top").append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .attr("class", "barchart")
-                    .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");  //(x,y) -> x from left to right, y from top to bottom  
+        let height = 50 * barchartVals.length;
+        height = height - margin.top - margin.bottom; 
                 
-                const x = d3.scale.linear()
-                    .domain([0, d3.max(barchartValsJSON, function (d) {
-                        return d.value;
-                    })])
-                    .range([0, width]);
+        let svg = d3.select("#virtual_spend_top").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("class", "barchart")
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");   
+                
+        const x = d3.scale.linear()
+            .domain([0, d3.max(barchartVals, function (d) {
+                return d.value;
+            })])
+            .range([0, width]);
             
-                const y = d3.scale.ordinal()
-                    .domain(barchartValsJSON.map(function (d) {
-                        return d.name;
-                    }))
-                    .rangeRoundBands([height, 0], .1); // [set the range that our bars will cover], the amount of padding between the bars   
+        const y = d3.scale.ordinal()
+            .domain(barchartVals.map(function (d) {
+                return d.name;
+            }))
+            .rangeRoundBands([height, 0], .1);  
                 
-                const yAxis = d3.svg.axis()
-                    .scale(y)
-                    .tickSize(0)
-                    .orient("left");
+        const yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(0)
+            .orient("left");
         
-                const gy = svg.append("g")
-                    .attr("class", "y axis")
-                    .attr("fill", "white")
-                    .call(yAxis);
+        const gy = svg.append("g")
+            .attr("class", "y axis")
+            .attr("fill", "white")
+            .call(yAxis);
         
-                let bars = svg.selectAll(".bar")
-                    .data(barchartValsJSON)
-                    .enter()
-                    .append("g");        
+        let bars = svg.selectAll(".bar")
+            .data(barchartVals)
+            .enter()
+            .append("g");        
                  
-                bars.append("rect")
-                    .attr("class", "bar")
-                    .attr("y", function (d) {
-                        return y(d.name);
-                    })
-                    .attr("height", y.rangeBand())
-                    .attr("x", 0)
-                    .attr("width", function (d) {
-                        return x(d.value);
-                    })
-                    .attr("fill", function(d) {
-                        if (d.value == maxVal) {
-                            return "grey";  
-                        } else if (d.value<0) {
-                            if (d.value == minVal) {
-                                return "tomato"; //tomato or firebrick
-                            } else {
-                                return "red";
-                            }
-                        } else if (d.value == minVal) {
-                            return "chocolate"; 
-                        }
-                        return "navy";
-                    });            
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", function (d) {
+                return x(d.value);
+            })
+            .attr("fill", function(d) {
+                if (d.value == maxVal) {
+                    return "grey";  
+                } else if (d.value<0) {
+                    if (d.value == minVal) {
+                        return "tomato";
+                    } else {
+                        return "red";
+                    }
+                } else if (d.value == minVal) {
+                    return "chocolate"; 
+                }
+                    return "navy";
+                });            
                     
-                bars.append("text")
-                    .attr("class", "label")
-                    .attr("y", function (d) {
-                        return y(d.name) + y.rangeBand() / 2 + 4;
-                    })
-                    .attr("x", function (d) {
-                        return x(d.value) + 3;
-                    })
-                    .text(function (d) {
-                        return d.value;
-                    })
-                    .attr("fill", "white");                          
-                
-                //maybe insert here the below for table since promise
-                
-            }
+        bars.append("text")
+            .attr("class", "label")
+            .attr("y", function (d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            .attr("x", function (d) {
+                return x(d.value) + 3;
+            })
+            .text(function (d) {
+                return d.value;
+            })
+            .attr("fill", function(d) {
+                return "white";
+            });                          
             
         setTableBody();
         $(window).resize(setTableBody);

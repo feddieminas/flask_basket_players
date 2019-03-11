@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700');
-
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500');
 
 /* Base */
 
@@ -18,7 +17,6 @@ nav .brand-logo {
     font-weight: 500;
 }
 
-
 #bg-img {
     background: url("basketball_background.jpg") no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -27,45 +25,114 @@ nav .brand-logo {
     background-size: cover;   
 }
 
-
 .opaqueoverlay {
     background-color: rgba(224, 224, 224, 0.19);
 }
 
 
-/* Forms Player */
+/* Login Page */
 
 
-.btn_player {
+.login-container {
+  width: 80%;
+  max-width: 1200px;
+  margin: 50px auto;
+}
+
+.login-container * {
+  box-sizing: border-box;
+}
+
+.flex-outer {
+  list-style-type: none;
+  padding: 0;
+}
+
+.flex-outer {
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.flex-outer li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.flex-outer > li:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.flex-outer li label,
+.flex-outer p {
+  padding: 8px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.flex-outer li label {
+  padding: 0px 8px 8px 8px;
+}
+
+.flex-outer > li > label,
+.flex-outer p {
+  flex: 1 0 120px;
+  max-width: 300px;
+}
+
+.flex-outer > li > label + * {
+  flex: 1 0 300px;
+}
+
+.flex-outer p {
+  margin: 0 0 30px 0;
+}
+
+.flex-outer li input {
+  padding: 15px;
+  border: none;
+}
+
+.flex-outer li button {
+  margin-left: auto;
+}
+
+
+/* Forms Add and editDel Player */
+
+
+.btn_player { /* button for adding a player on Add Player form, the two modal buttons for edit/del player */
     height: 35px;
     line-height: 24px;
     margin-left: 15px;
     padding: 0 0.5em;
 }
 
-.input-field .prefix.icons_player {
+.input-field .prefix.icons_player { /* Player's Name Input, Disciplines and Virtual Place Select Forms material-icons  */
     width: 30px;
 }
 
-.select-form-margin_player {
+.select-form-margin_player { /* Disciplines and Virtual Place Select Forms margin space */
     margin-bottom: 0;
 }
 
 [type="radio"]:not(:checked)+label:before, 
-[type="radio"]:not(:checked)+label:after {
+[type="radio"]:not(:checked)+label:after { /* Gender, Position and Birth Region radio buttons not checked stroke more visually appealing */
   border: 2px solid #b1dcfb;
 }
 
-.select-form-label-h_player,
-.select-wrapper input.select-dropdown {
+.select-form-label-h_player, /* Disciplines and Virtuals Labels */
+.select-wrapper input.select-dropdown { /* Disciplines and Virtuals Select Forms placeholders */
     font-size: 10px;
 }
 
-.input-field label.white-text.rate-vt-form-label_player {
+.input-field label.white-text.rate-vt-form-label_player { /* Disciplines and Virtuals Input fields */
     font-size: 11px;
 }
 
-/* Forms Player Modal */
+
+/* Forms editDel Player Modal */
+
 
 .modal {
     width:90%;
@@ -74,6 +141,7 @@ nav .brand-logo {
 .modal .modal-footer .btn, .modal .modal-footer .btn-large, .modal .modal-footer .btn-flat {
     margin: 0px 3px;
 }
+
 
 /* List Summary */
 
@@ -86,7 +154,7 @@ nav .brand-logo {
     padding: 0.4em;
 }
 
-.btn-floating.btn-large {
+.btn-floating.btn-large { /* btn-floating is the Add Player Button with the plus sign  */
     width: 56px;
     height: 45px;
     padding: 0;
@@ -94,6 +162,16 @@ nav .brand-logo {
 
 .btn-floating.btn-large i {
     line-height: 45px;
+    padding-right: 0px;
+}
+
+#headerPSpanPos { /* id for the span's list paragraph header of the Birth Region vs its material icon header */
+    position: relative;
+}
+
+#headerPSpanPos span {
+    position: absolute;
+    top: -6px;
 }
 
 
@@ -109,17 +187,17 @@ nav .brand-logo {
 
 .msg-error {
     border-color: #d32f2f;
-    background-color: #ef5350;
+    background-color: #ef5350; /* red */
 }
 
 .msg-alert {
     border-color: #ef6c00;
-    background-color: #ff9800;
+    background-color: #ff9800; /* orangeYellow */
 }
 
 .msg-success{
     border-color: #68a968;
-    background-color: #5cb85c;
+    background-color: #5cb85c; /* green */
 }
 
 
@@ -133,6 +211,7 @@ table {
 #tbl-container
 {
     overflow: hidden;
+    min-width: 365px; 
 }
 
 #table-text-header p {
@@ -155,18 +234,17 @@ th {
     overflow: auto;
 }
 
-.hcell
+.hcell, .bcell 
 {
     text-align: left;
-    height: 40px; 
-    width:120px;
-    min-width: 120px; 
+    width:105px;  
+    min-width: 105px;  /* insert your width and min-width to orientate with the horizontal scrolling */
+    border-radius: 0px;
 }
 
-.bcell 
+.hcell
 {
-    text-align: left;
-    min-width: 120px; 
+    height: 40px; 
 }
 
 tr:nth-child(even){
@@ -198,6 +276,10 @@ table.highlight>tbody>tr:hover{
         font-size: 0.975rem; 
     }
     
+    .btn-floating.btn-large i {
+        padding-right: 10px;
+    }    
+    
     .msg {
         width: 100%;
     }
@@ -206,6 +288,9 @@ table.highlight>tbody>tr:hover{
         font-size: 11.5px;
     }
     
+    .barchart {
+        transform: translate(-20px,0);
+    }
 }
 
 @media (min-width: 401px) and (max-width:767px) {
@@ -217,6 +302,9 @@ table.highlight>tbody>tr:hover{
         font-size: 13px;
     }    
     
+    .barchart {
+        transform: translate(-20px,0);
+    }    
 }
 
 @media (min-width: 768px) and (max-width: 991px) {    
@@ -240,7 +328,6 @@ table.highlight>tbody>tr:hover{
 
     
 @media screen and (min-width: 992px) {  
-
     .select-form-label-h_player {
         font-size: 13.5px; 
     }

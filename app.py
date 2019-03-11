@@ -16,79 +16,109 @@ app.secret_key = "fmd270584"
 app.config["MONGO_DBNAME"] = 'dcd_basketball'
 app.config["MONGO_URI"] = 'mongodb://root:dcd_basketball1234@ds119049.mlab.com:19049/dcd_basketball'
 
+'''global player variables'''
 disciplines=["points","rebounds","assists","steals","blocks","field_goals","three_points","free_throws"]
 virtuals=["coffee", "brunch", "street","na"]
 
 mongo = PyMongo(app) 
 
+
+''' LOGIN / LOGOUT '''
+
 @app.route('/')
 @app.route('/login')
 def get_username():
-    return render_template("index.html")
-
+    ''' Login Page... userId number of Guest credentials and store in sessions '''
+    if "userID" not in session: session["userID"] = None
+    return render_template("index.html", userId=session["userID"])
 
 @app.route('/insert_login', methods=['POST'])
 def insert_login():
-    user = request.form["username"].strip().lower()
-    passwd = request.form["password"].strip().lower()
-    hpasswd = bcrypt.generate_password_hash(passwd).decode('utf-8')
-    
-    fileExists = os.path.isfile('static/logs.txt')
-    userId = -1
-    
-    if fileExists == False:
-        with open('static/logs.txt', 'w') as f:
-            f.write('{0},{1},{2}'.format(userId+1, user,hpasswd))
-            f.close()
-    else:
-        with open('static/logs.txt', 'r') as f:
-            lines = f.read().splitlines()
-            f.close()
-        
-        if lines: 
-            for i, text in enumerate(lines):
-                if (text.split(',')[1] == user and bcrypt.check_password_hash(text.split(',')[2], passwd)):
-                    userId=i
-        
-        if userId == -1: #new Id 
-            with open('static/logs.txt', 'a') as f:
-                if not lines:
-                    f.write('{0},{1},{2}'.format(userId+1,user,hpasswd))
-                else:
-                    userId = i+1 
-                    f.write('\n{0},{1},{2}'.format(userId,user,hpasswd))
-                f.close()
+    ''' Logout and else Login actions taken '''
+    if request.form['action'] == 'logout_action': 
+        '''if logout clear the session'''
+        #app.secret_key = os.urandom(8)
+        session["userID"] = None
+        session["msg"] = ""
+        return redirect(url_for('get_username'))
+    elif request.form['action'] == 'login_action': 
+        ''' if login, I/O txt file operations for credentials '''
+        try:
+            user = request.form["username"].strip().lower()
+            passwd = request.form["password"].strip().lower()
+            hpasswd = bcrypt.generate_password_hash(passwd).decode('utf-8') 
             
-    session["userID"] = userId 
-    session["msg"] = ""
+            fileLogs = 'static/logs.txt' 
+            fileExists = os.path.isfile(fileLogs)
+            userId = -1
+            
+            if fileExists == False:
+                with open(fileLogs, 'w') as f: 
+                    ''' first ever Guest logsIn '''
+                    f.write('{0},{1},{2}'.format(userId+1, user,hpasswd))
+                    f.close()
+            else:
+                with open(fileLogs, 'r') as f: 
+                    ''' read existing file created '''
+                    lines = f.read().splitlines()
+                    f.close()
+                
+                if lines: 
+                    for i, text in enumerate(lines):
+                        ''' Check username and password and retrieve the userID '''
+                        if (text.split(',')[1] == user and bcrypt.check_password_hash(text.split(',')[2], passwd)):
+                            userId=i
+                
+                if userId == -1: 
+                    ''' if no existing userID retrieved, open the file and store a new userID '''  
+                    with open(fileLogs, 'a') as f:
+                        if not lines:
+                            ''' file created isEmpty and first Guest enters '''
+                            f.write('{0},{1},{2}'.format(userId+1,user,hpasswd)) 
+                        else:
+                            userId = i+1 
+                            ''' file created not isEmpty and append to last stored userID '''
+                            f.write('\n{0},{1},{2}'.format(userId,user,hpasswd))  
+                        f.close()
+            
+            ''' init your session variables '''        
+            session["userID"] = userId
+            session["msg"] = ""
+        except:
+            ''' ex. error can occur if one not enters username and password 
+            and press login button, then reload the login page '''
+            return redirect(url_for('get_username'))
     
-    return redirect(url_for('get_list'))
+        ''' login success with userID not null '''
+        return redirect(url_for('get_list'))
 
+
+''' LIST SUMMARY '''
 
 @app.route('/list_summary')
 def get_list():
-    if "userID" not in session: 
+    ''' Not enter to users List Page if not userID exist and with value '''
+    if "userID" not in session or session["userID"] is None:  
         return redirect(url_for("get_username"))
 
-    #_ubp=mongo.db.users_basket_players.find({}, {'userId':int(session["userID"])})
+    ''' Guest player records retrieve '''
     _ubp=mongo.db.users_basket_players.find({'userId':int(session["userID"])})
-    #player_list = [player for player in _ubp]
     
-    _ubpCopy = mongo.db.users_basket_players.find({'userId':int(session["userID"]) }, { "name": 1,"birth_region": 1,"virtual_meet":1,"_id":0 }) #_ubp.clone()
-    with open('static/listChart.json', 'w') as f:
-        f.write(dumps(_ubpCopy))
-        f.close()
+    ''' Guest player records retrieve birth region, store it as JSON to move into JS script  '''
+    _ubpCopy = mongo.db.users_basket_players.find({'userId':int(session["userID"]) }, {"birth_region": 1,"_id":0 })
+    ubpCopyForJS = dumps(_ubpCopy)
     
-    #print(session["msg"]) #flash it
+    ''' flask string messages for add/edit/delete and already exists player '''
     if session["msg"]!="":
         category, message = session["msg"]
         flash(message, category)
         session["msg"] = ""
     
-    return render_template("listsummary.html", user_id=session["userID"], ubp=_ubp)
+    return render_template("listsummary.html", user_id=session["userID"], ubp=_ubp, ubpJS=ubpCopyForJS)
 
 @app.context_processor
 def utility_processor():
+    ''' calc individual player's disciplines average on runtime '''
     def format_avg(val1,val2,val3):
         sum = 0
         list=[val1,val2,val3]
@@ -97,6 +127,7 @@ def utility_processor():
             sum = sum +num
         avg  = sum / len(list)
         return u'{0:.1f}'.format(avg)
+    ''' calc individual player's virtual expenses for guest on runtime '''    
     def format_vp(times,gofor):
         dictGoforRate = {"brunch": 0.60, "coffee": 0.28, "street": 0.11, "na": 0.01}
         goforResRate = dictGoforRate["na"] if gofor=="" else dictGoforRate[gofor]
@@ -105,19 +136,29 @@ def utility_processor():
     return dict(format_avg=format_avg, format_vp=format_vp)
 
 
-@app.route('/add_player')
-def add_player():
-    return render_template("addplayer.html", disciplines=disciplines, virtuals=virtuals)
+''' PLAYERS ADD/EDIT/DEL '''
 
-def adjNums(val,adjval):
+''' seven functions below for cross-checking and adjusting inputs if err types or range of values'''
+
+'''
+sub-function of checkVals 
+replace is defined in case one use comma in decimals (ex. 9,2) 
+'''
+def adjNums(key,val,adjval):
     if val[-1]=='0' and len(val)>2:
-        adjval=int(int(adjval.replace(',','.'))/10)
+        adjval=int(int(adjval.replace(',','.'))/10) 
     elif len(val)<=2:
         adjval=int(adjval)
     else:
         adjval=float(adjval.replace(',','.'))/10
+        if key[:2]=="vp" and val[1]==".": adjval=round(float(adjval)/10,1)
     return adjval    
 
+''' 
+check and adjust if necessary the three disciplines and virtual times values.
+extract special chars (+,-) and digits as a string and convert to a whole number
+or with one decimal if a guest has inserted any.
+'''
 def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
     dictCheckVal = { "disc1_rate":disc1_rate, "disc2_rate":disc2_rate, 
     "disc3_rate":disc3_rate, "vp_time":vp_time}
@@ -139,20 +180,24 @@ def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
                     pass
                 
                 if adjval!="": 
-                    adjval= adjNums(val,adjval)    
+                    adjval= adjNums(key,val,adjval)    
                 
                 #final touch
                 if key[:2]=="vp":
                     adjval = 0 if adjval=="" else adjval if adjval<0 else adjval
-                    if adjval>20: adjval=20 
+                    if adjval>20: adjval=20 # max value to be inserted
                 else:
                     adjval = 5 if adjval=="" else adjval if adjval<0 else adjval
-                    if adjval>10: adjval=10
+                    if adjval>10: adjval=10 # max value to be inserted
         finally:
             dictCheckVal[key]=adjval
         
     return dictCheckVal 
-    
+
+'''
+Check Disciplines Select form for any duplicates. 
+For ex. disc1 and disc3 both not to include points. Only the first served input. 
+'''
 def checkSelects(disc1,disc2,disc3):
     listCheckDisc = [disc1,disc2,disc3]
     myduplis = [item for item, count in Counter(listCheckDisc).items() if count > 1]
@@ -168,8 +213,12 @@ def checkSelects(disc1,disc2,disc3):
     dictCheckSel = {"disc1": listCheckDisc[0], "disc2": listCheckDisc[1],"disc3": listCheckDisc[2]}
     return dictCheckSel
 
+'''
+virtual place vs virtual times interactivity
+show a min value or a place if its counter option is not empty
+'''
 def vpStandalone(vp,dictCheckVal):
-    if vp!="" and dictCheckVal["vp_time"]==0:
+    if (vp!="" and vp!="na") and dictCheckVal["vp_time"]==0:
         dictCheckVal["vp_time"]=1
     elif vp=="" and dictCheckVal["vp_time"]=="":    
         dictCheckVal["vp_time"]=0
@@ -179,41 +228,59 @@ def vpStandalone(vp,dictCheckVal):
         pass
     return vp,dictCheckVal 
 
+'''
+As a single input of Name is provided, need to check whether a guest will insert both name or surname
+or only the surname. Apart from a whitespace or a tab, we include the possibility of separate them with dot and comma 
+(ex. michael jordan - michael.jordan - michael,jordan). 
+'''
 def playerHypothSurname(formName):
     return re.split('. |, |' ' |\t |'' ',formName)[-1]
 
+'''
+sub-function of CheckPlayerInDB
+use a custom algorithm to retrieve part of player's surname, which we will then use it to retrieve data from db
+using regex and wildcards before and after
+'''
 def LongestSubstring(Surname,wordLen):
     mid = (wordLen-1) // 2
     left = mid // 2
     right = min(wordLen, max((mid+wordLen) // 2,5))
     return Surname[left:mid] + Surname[mid:right]
 
+'''
+check if already the same player exists in the database  
+'''
 def CheckPlayerInDB(ubp,formName):
     #split name and surname to take the surname
     SurnameTake = playerHypothSurname(formName)
-    #longest substring of a surname and string of longest substring
+    #custom function for a distinct search of substring of the surname
     LongSubstr = LongestSubstring(SurnameTake,len(SurnameTake))
     #find regex of a name in database and retrieve
     playerIfExists = ubp.find_one({'userId':int(session["userID"]), 'name':{'$regex':'.*' + LongSubstr + '.*'}},{ "name": 1,"_id":1 })
-    #ndiff with lower. if zero insert
+    #use ndiff py function to find differences
     playerNotExists = True
     if (playerIfExists is not None):
-        print(playerIfExists['name'],formName)
-        countDiffs = sum([i[0] != ' ' for i in ndiff(playerIfExists['name'],formName)]) #if same name and surname it exists so no insert one
-        if countDiffs == 0: 
+        countDiffs = sum([i[0] != ' ' for i in ndiff(playerIfExists['name'],formName)]) #if same name and surname it exists so no new insert
+        if int(countDiffs/2) <= 1: #assume max one "spelling" error
             playerNotExists = False
     return playerNotExists         
 
+
+'''''' 
+@app.route('/add_player')
+def add_player():
+    return render_template("addplayer.html", disciplines=disciplines, virtuals=virtuals)
+''''''  
+
 @app.route('/insert_player', methods=['POST'])
 def insert_player():
-    
     # Check Values
     dictCheckVal = checkVals(request.form["disc1_rate"], request.form["disc2_rate"], request.form["disc3_rate"], request.form["vp_time"])
         
     # Check Select
     dictCheckSel = checkSelects(request.form.get("disc1", ""),request.form.get("disc2", ""),request.form.get("disc3", ""))
-
-    #Final touches
+ 
+    # Final touches
     for key, val in dictCheckSel.items():
         if dictCheckSel[key]=="": dictCheckVal[key+"_rate"]=""
 
@@ -242,18 +309,23 @@ def insert_player():
     return redirect(url_for('get_list'))
 
 
+''''''
 @app.route('/edit_del_player/<player_id>')
 def edit_del_player(player_id):
     the_player = mongo.db.users_basket_players.find_one({"_id": ObjectId(player_id),'userId':int(session["userID"])})
     return render_template("editDelplayer.html", player=the_player, disciplines=disciplines, virtuals=virtuals, player_db=the_player["name"])
+''''''
 
 @app.route('/update_del_player/<player_id>/<player_db>', methods=["POST"])
 def update_del_player(player_id, player_db):
     if request.form['action'] == 'edit_action':
+        # Check Values
         dictCheckVal = checkVals(request.form["disc1_rate"], request.form["disc2_rate"], request.form["disc3_rate"], request.form["vp_time"])
+        
+        # Check Select
         dictCheckSel = checkSelects(request.form.get("disc1", ""),request.form.get("disc2", ""),request.form.get("disc3", ""))
         
-        #Final touches
+        # Final touches
         for key, val in dictCheckSel.items():
             if dictCheckSel[key]=="": dictCheckVal[key+"_rate"]=""
     
