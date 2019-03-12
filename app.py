@@ -11,7 +11,7 @@ from difflib import ndiff
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-app.secret_key = "fmd270584" 
+app.secret_key = os.urandom(8)
 
 app.config["MONGO_DBNAME"] = 'dcd_basketball'
 app.config["MONGO_URI"] = 'mongodb://root:dcd_basketball1234@ds119049.mlab.com:19049/dcd_basketball'
@@ -37,9 +37,8 @@ def insert_login():
     ''' Logout and else Login actions taken '''
     if request.form['action'] == 'logout_action': 
         '''if logout clear the session'''
-        #app.secret_key = os.urandom(8)
-        session["userID"] = None
-        session["msg"] = ""
+        session.pop("userID", None)
+        session.pop("msg", "")
         return redirect(url_for('get_username'))
     elif request.form['action'] == 'login_action': 
         ''' if login, I/O txt file operations for credentials '''

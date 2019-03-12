@@ -1,2 +1,3 @@
 0,fedder,$2b$12$8g/oq5TZXXTnMFKixIQ7dOcM8oAhwt/kT1M5pUxGeXXe9ICyRYZL6
 1,dimitris,$2b$12$8iR6Ip96FH2hq6aAxtskJ.10uhEjvFvMhMnuGuGwaKL67nBuiQuDG
+2,giorgos,$2b$12$4guijArOcGA4D28.fZLe6uJD7Z3asKBtJ1kB1q8Vkrez5j5MHxley

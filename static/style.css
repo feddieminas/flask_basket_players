@@ -17,6 +17,14 @@ nav .brand-logo {
     font-weight: 500;
 }
 
+nav ul a { 
+    font-size: 1.3rem;
+}
+
+nav i.material-icons {
+    font-size: 30px;
+}
+
 #bg-img {
     background: url("basketball_background.jpg") no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -289,7 +297,8 @@ table.highlight>tbody>tr:hover{
     }
     
     .barchart {
-        transform: translate(-20px,0);
+        transform: translate(-10px,0);
+        transition: transform 0.3s ease-in-out 0s;
     }
 }
 
