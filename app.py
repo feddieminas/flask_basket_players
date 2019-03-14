@@ -47,7 +47,8 @@ def insert_login():
             passwd = request.form["password"].strip().lower()
             hpasswd = bcrypt.generate_password_hash(passwd).decode('utf-8') 
             
-            fileLogs = 'static/logs.txt' 
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            fileLogs = os.path.join(dir_path, 'static', 'logs.txt') 
             fileExists = os.path.isfile(fileLogs)
             userId = -1
             
@@ -55,6 +56,7 @@ def insert_login():
                 with open(fileLogs, 'w') as f: 
                     ''' first ever Guest logsIn '''
                     f.write('{0},{1},{2}'.format(userId+1, user,hpasswd))
+                    userId = userId+1
                     f.close()
             else:
                 with open(fileLogs, 'r') as f: 
@@ -100,6 +102,7 @@ def get_list():
     if "userID" not in session or session["userID"] is None:  
         return redirect(url_for("get_username"))
 
+
     ''' Guest player records retrieve '''
     _ubp=mongo.db.users_basket_players.find({'userId':int(session["userID"])})
     
@@ -128,6 +131,7 @@ def utility_processor():
         return u'{0:.1f}'.format(avg)
     ''' calc individual player's virtual expenses for guest on runtime '''    
     def format_vp(times,gofor):
+        if times == "": times = 0
         dictGoforRate = {"brunch": 0.60, "coffee": 0.28, "street": 0.11, "na": 0.01}
         goforResRate = dictGoforRate["na"] if gofor=="" else dictGoforRate[gofor]
         vpCalc = (((goforResRate * times) * 100)/2.5) #3
@@ -361,4 +365,4 @@ def update_del_player(player_id, player_db):
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
-    port=os.environ.get('PORT'))
+    port=os.environ.get('PORT'), debug=True)
