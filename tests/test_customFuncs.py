@@ -164,31 +164,18 @@ class TestApp(unittest.TestCase):
             self.assertIn(result,Surname)
             
         """
-        python3 -m unittest
-        F
-        ======================================================================
-        FAIL: test_can_create_a_long_substr (test_customFuncs.TestApp)
-        ----------------------------------------------------------------------
-        Traceback (most recent call last):
-          File "/home/ubuntu/workspace/tests/test_customFuncs.py", line 19, in test_can_create_a_long_substr
-            self.assertGreater(len(result),3)
-        AssertionError: 3 not greater than 3
-        
-        ----------------------------------------------------------------------
-        Ran 1 test in 0.000s
-        
         FAILED (failures=1)
         
         PERSONAL NOTE: One failure occur due to name Law take the whole str as substr to retrieve. Its length 3 is not more than 3
         """
         
-    def text_player_exists_in_db(self):
+    def test_player_exists_in_db(self):
         '''
         Check if add or edit player name already exists in the database. We assume that not two players have same name and surname.
         the test is if player does not exists. If this returns to false, the player does exists. If it returns to True, the player does not
         exist.
         '''
-        MONGODB_URI_TEST = os.getenv("MONGO_URI_TEST")
+        MONGODB_URI_TEST = 'mongodb://root:dcd_basketball1234@ds119049.mlab.com:19049/dcd_basketball'
         DBS_NAME = 'dcd_basketball'
         COLLECTION_NAME = 'users_basket_players'
         
@@ -199,7 +186,7 @@ class TestApp(unittest.TestCase):
             except pymongo.errors.ConnectionFailure as e:
                 pass
                 
-        conn = mongo_connect(MONGODB_URI_TEST)
+        conn = mongo_connect(MONGODB_URI_TEST) 
         ubp = conn[DBS_NAME][COLLECTION_NAME]
         
         self.assertFalse(customFuncs.CheckPlayerInDB(ubp, "luca doncic".lower(), 0)) 
@@ -209,4 +196,21 @@ class TestApp(unittest.TestCase):
         
         """
         Run Test All Success
-        """        
+        """  
+        
+        '''
+        python3 -m unittest
+        F......
+        ======================================================================
+        FAIL: test_can_create_a_long_substr (test_customFuncs.TestApp)
+        ----------------------------------------------------------------------
+        Traceback (most recent call last):
+          File "/home/ubuntu/workspace/tests/test_customFuncs.py", line 163, in test_can_create_a_long_substr
+            self.assertGreater(len(result),3)
+        AssertionError: 3 not greater than 3
+        
+        ----------------------------------------------------------------------
+        Ran 7 tests in 1.460s
+        
+        FAILED (failures=1)        
+        '''

@@ -74,7 +74,7 @@ Currently, the website provides with a general but on point overview of the subj
 
 ### Features Left to Implement
 
-- Reorder the Table Summary for name to be at the first column and in absolute positioning. Therefore when one scrolls horizontally has a clearer picture of
+- Reorder the Table Summary for name to be at the first column and in absolute position. Therefore when one scrolls horizontally has a clearer picture of
   the player. Currently the row is highlighted and is a helper.
 - Add a category list for people to be able to add more favorite disciplines from the already existing ones.
 - Fit a number percentage discrete label text on pie chart and two decimal points on rating and virtual timing (currently fits one decimal). 
@@ -103,23 +103,24 @@ Currently, the website provides with a general but on point overview of the subj
     - The project uses **JQuery** to enable interactivity of slider and dropdown buttons.
 
 - [D3 JS](https://cdnjs.com/libraries/d3)
-    - The project uses **D3 JS** for data type, formats, selecting elements and functions. 
-
-- [Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/)
-    - The project uses **Chrome DevTools** to simplify editing pages on-the-fly and assist you to responsive design. 
+    - The project uses **D3 JS** for charts, data type, formats, selecting elements and functions. 
 
 
 ## Testing
 
 - Used Python unittest module framework to test :
-  -     
+  - flask login view succesfully registered
+  - custom functions for checking input fields (check values are correct) and select columns (for no duplicated selections and inserting defaults if intentional field(s) are empty)
+  - Name field is one rather than two (First Name, Surname), thus we test assumptions of a user entering the name by either inserting the surname or inserting both name and surname
+    - A sub function is to check the MongoDB whether a current Name written the same way exists with max having one spelling error 
 
 ----
 
 Encountered issues:
 
-
- 
+- Dealing with horizontal table scrolling and adjust to its window size
+- d3.js chart and labels orientation
+- python to js transfer data, ensuring that will account for all records listed
 
 ## Deployment
 
