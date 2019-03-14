@@ -124,7 +124,7 @@ Encountered issues:
 
 ## Deployment
 
-I deployed the project on [Heroku](https://dashboard.heroku.com/apps/basketball-players-favs).
+I deployed the project on [Heroku](https://basketball-players-favs.herokuapp.com/).
 
 Worked on Google Chrome and Safari Version.
 

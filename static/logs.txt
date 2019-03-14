@@ -1,3 +1,6 @@
 0,fedder,$2b$12$8g/oq5TZXXTnMFKixIQ7dOcM8oAhwt/kT1M5pUxGeXXe9ICyRYZL6
 1,dimitris,$2b$12$8iR6Ip96FH2hq6aAxtskJ.10uhEjvFvMhMnuGuGwaKL67nBuiQuDG
 2,giorgos,$2b$12$4guijArOcGA4D28.fZLe6uJD7Z3asKBtJ1kB1q8Vkrez5j5MHxley
+3,ric,$2b$12$HQnjXLncEQxyUZTsFQkoPO7UEQFemncJK.LESVzSLVfcUt9Vafj0G
+4,savvas,$2b$12$DaaFZl5BYktf4RB92GVwq.P9XsZxUEiAPGt2tdL5F3c.G3.lXOopK
+5,panos,$2b$12$WOqvIpLv3uRrPauOlkZ7MeOxfdF9nVzOs53JcR74xXEddUQZ1KZom
