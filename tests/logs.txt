@@ -1,0 +1,2 @@
+0,randomuser1,$2b$12$uh4MyuO07zFhf.wqZhyWMucEJVmQYCB29411qQEL0PLKnzSo6XZLq
+1,randomuser2,$2b$12$r5B3Qs5INhpoyX7W9zabdOxOTTn5xOiKcSZaxahgbrktmxED5/pV.

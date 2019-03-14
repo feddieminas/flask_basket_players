@@ -65,7 +65,7 @@ def insert_login():
                 if lines: 
                     for i, text in enumerate(lines):
                         ''' Check username and password and retrieve the userID '''
-                        if (text.split(',')[1] == user and bcrypt.check_password_hash(text.split(',')[2], passwd)):
+                        if (text.split(',')[1] == user and bcrypt.check_password_hash(text.split(',')[2].encode('utf-8'), passwd)):
                             userId=i
                 
                 if userId == -1: 
@@ -145,13 +145,14 @@ replace is defined in case one use comma in decimals (ex. 9,2)
 '''
 def adjNums(key,val,adjval):
     if val[-1]=='0' and len(val)>2:
-        adjval=int(int(adjval.replace(',','.'))/10) 
+        adjval=round(int(adjval.replace(',','.'))/10,1) 
     elif len(val)<=2:
         adjval=int(adjval)
     else:
-        adjval=float(adjval.replace(',','.'))/10
-        if key[:2]=="vp" and val[1]==".": adjval=round(float(adjval)/10,1)
-    return adjval    
+        divideMe = 1 if key[:2]=="di" and val[2]=="." else 10 
+        adjval=float(adjval.replace(',','.'))/divideMe
+        if any([key[:2]=="vp" and val[1]=="." and val!=str(adjval),len(str(adjval))>4]): adjval=round(int(adjval)/10,1)
+    return adjval       
 
 ''' 
 check and adjust if necessary the three disciplines and virtual times values.
@@ -191,7 +192,7 @@ def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
         finally:
             dictCheckVal[key]=adjval
         
-    return dictCheckVal 
+    return dictCheckVal
 
 '''
 Check Disciplines Select form for any duplicates. 
@@ -233,7 +234,7 @@ or only the surname. Apart from a whitespace or a tab, we include the possibilit
 (ex. michael jordan - michael.jordan - michael,jordan). 
 '''
 def playerHypothSurname(formName):
-    return re.split('. |, |' ' |\t |'' ',formName)[-1]
+    return re.sub(r'([\s,.]+)',r' \1 ',formName).split()[-1]
 
 '''
 sub-function of CheckPlayerInDB

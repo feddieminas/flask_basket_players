@@ -229,7 +229,7 @@ $(document).ready(function() {
             .tickSize(0)
             .orient("left");
         
-        const gy = svg.append("g")
+        svg.append("g")
             .attr("class", "y axis")
             .attr("fill", "white")
             .call(yAxis);
