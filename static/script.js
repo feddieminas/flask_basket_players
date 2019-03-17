@@ -2,7 +2,8 @@ $(document).ready(function() {
     // materialize js functionalities
     $(".button-collapse").sideNav();
     $('select').material_select();
-    $('input#disc1_rate, input#disc2_rate, input#disc3_rate, input#vp_time').characterCounter();
+    $('input#disc1_rate, input#disc2_rate, input#disc3_rate, input#vp_time, input#username, input#password').characterCounter();
+    $(".character-counter").css({'color': 'white'});
     $('#modal_edit').modal(); $('#modal_dele').modal();
     
     // horizontal table scrolling relative to window's width 

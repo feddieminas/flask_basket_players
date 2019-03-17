@@ -3,26 +3,40 @@
   
   <div class="login-container">
     
+  <!-- flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="msg msg-{{ category }} z-depth-3 text-white">{{ message.title() }} </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}    
+    
     <form action="{{ url_for('insert_login') }}" method="POST" class="col s12">
     
       <ul class="flex-outer">
-        <li id="headerLoginLi"><p class="teal lighten-1 white-text fw300">My Credentials</p></li>
-        <li class="input-field">
-          <input id="username" name="username" type="text" class="white-text validate">
-          <label class="fw300" for="username">Username</label>
+        <li id="headerLoginLi">
+          <p class="teal lighten-1 white-text fw300">My Credentials</p>
+          <button class="btn btn_list waves-effect waves-light blue" type="submit" name="action" value="signup_action">SignUp
+            <i class="material-icons right">person_add</i>
+          </button>           
         </li>
         <li class="input-field">
-          <input id="password" type="password" name="password" class="white-text validate">
-          <label class="fw300" for="password">Password</label>
+          <input id="username" type="text" name="username" class="white-text validate" data-length="15">
+          <label class="fw500 white-text" for="username">Username</label>
+        </li>
+        <li class="input-field">
+          <input id="password" type="password" name="password" class="white-text validate" data-length="10">
+          <label class="fw500 white-text" for="password">Password</label>
         </li>
         <li>
           <!-- Login if no userID number exists, while logout if userID is a number (a guest already logged in) -->
-          {% if userId is none %}
-          <button class="btn waves-effect waves-light" type="submit" name="action" value="login_action">Login
+          {% if userID is none %}
+          <button class="btn btn_list waves-effect waves-light" type="submit" name="action" value="login_action">Login
             <i class="material-icons right">add</i>
           </button>           
           {% else %}
-          <button class="btn waves-effect waves-light red" type="submit" name="action" value="logout_action">Logout
+          <button class="btn btn_list waves-effect waves-light red" type="submit" name="action" value="logout_action">Logout
             <i class="material-icons right">exit_to_app</i>
           </button>         
           {% endif %}

@@ -9,30 +9,61 @@ class TestApp(unittest.TestCase):
     
     def test_guest_login_flask_view(self):
         '''
-        Test two random users entering in the website. randomUser1 enters twice.
-        Last AssertEqual tests three username Ids in case the file created three random users (duplicated randomUser1 with UserId = 2), which would have been a test failed.
+        Test two random users entering in the website. randomUser1 tries to signup twice with same username. 
+        For test purposes we use a text file instead of db. Text file columns : UserID, Username, Password
+        
+        Last AssertEqual tests three username IDs in case the file created three random users (duplicated randomUser1 with UserID = 2).
+        
+        sessionMsg = YES is when an action will not occur
+        sessionMsg = "" is when an action will occur. We insert messages only when actions do not occur, as if actions occur will redirect you to the List Summary
+        session clear = succesfully logged out
         '''
-        fileLogs = 'logs.txt'
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        fileLogs = os.path.join(dir_path, 'logs.txt') 
         fileExists = os.path.isfile(fileLogs)
-        if fileExists == True: os.remove(fileLogs)
-        username, password, action ="randomUser1", b"randomUserPass1", "login_action"
-        self.assertEqual(customFuncs.insert_login(username,password,action), "set session['userID'] and session['msg'] and redirect(url_for('get_list'))")
-        username, password, action ="randomUser1", b"randomUserPass1", "logout_action"
-        self.assertEqual(customFuncs.insert_login(username,password,action), "Session delete and redirect(url_for('get_username'))")
-        username, password, action ="randomUser2", b"randomUserPass2", "login_action"
-        self.assertEqual(customFuncs.insert_login(username,password,action), "set session['userID'] and session['msg'] and redirect(url_for('get_list'))") 
-        username, password, action ="randomUser2", b"randomUserPass2", "logout_action"
-        self.assertEqual(customFuncs.insert_login(username,password,action), "Session delete and redirect(url_for('get_username'))")        
-        username, password, action ="randomUser1", b"randomUserPass1", "login_action"
-        self.assertEqual(customFuncs.insert_login(username,password,action), "set session['userID'] and session['msg'] and redirect(url_for('get_list'))")
-        username, password, action ="", "", "login_action"
-        self.assertEqual(customFuncs.insert_login(username,password,action), "redirect(url_for('get_username'))")        
+        if fileExists == False: 
+            file = open(fileLogs, "w") 
+            file.close()
+        
+        # first user signs up. When sign up you are automatically logged in
+        username, password, action, session_userID, LogOutFirst ="randomUser1", b"randomUserPass1", "signup_action", None, False
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "sessionMsg =  and redirect(url_for('get_list'))")
+        # second user tries to sign up while first user is logged in
+        username, password, action, session_userID, LogOutFirst ="randomUser2", b"randomUserPass2", "signup_action", 0, True
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "sessionMsg = YES and redirect(url_for('get_username'))") 
+        # first user logs out and second user signs up
+        username, password, action, session_userID, LogOutFirst ="randomUser1", b"randomUserPass1", "logout_action", 0, True
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "session clear and redirect(url_for('get_username'))") 
+        # second user signs up now and succesfully
+        username, password, action, session_userID, LogOutFirst ="randomUser2", b"randomUserPass2", "signup_action", None, False
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "sessionMsg =  and redirect(url_for('get_list'))")        
+        # second user logs out
+        username, password, action, session_userID, LogOutFirst ="randomUser2", b"randomUserPass2", "logout_action", 1, True
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "session clear and redirect(url_for('get_username'))")
+        # second user logs in now from the login action
+        username, password, action, session_userID, LogOutFirst ="randomUser2", b"randomUserPass2", "login_action", None, False
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "sessionMsg =  and redirect(url_for('get_list'))")
+        # second user logs out
+        username, password, action, session_userID, LogOutFirst ="randomUser2", b"randomUserPass2", "logout_action", 1, True
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "session clear and redirect(url_for('get_username'))") 
+        # first user tries to signup with his username unsuccesfully as same username already exists
+        username, password, action, session_userID, LogOutFirst ="randomUser1", b"Pass1", "signup_action", None, False
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "sessionMsg = YES and redirect(url_for('get_username'))")         
+        # first user goes to login and enters a wrong password. He does not login
+        username, password, action, session_userID, LogOutFirst ="randomUser1", b"Pass1", "login_action", None, False
+        self.assertEqual(customFuncs.insert_login(fileLogs,username,password,action,session_userID,LogOutFirst), "sessionMsg = YES and redirect(url_for('get_username'))") 
+        
         with open(fileLogs, 'r') as f:
             lines = f.read().splitlines()
             f.close()
         lines = [item for i, text in enumerate(lines) for item in text.split(',')]
         # >>> ['0', 'randomuser1', '$2b$12$pCbYhaMxMZq3V1tUq3ZHu.gpLDHueM.4wKY/DwkfxmNDyT2szuMzO', '1', 'randomuser2', '$2b$12$sRU64dR3lnbvdrHAK0nt7.PzMqMDIpv32KmRzD/goOO09BaGjCeG6']
         self.assertEqual(list(filter(lambda x: x in ['0','1','2'], lines)), ['0','1'])
+        
+        #Truncate all contents
+        f = open(fileLogs, 'r+')
+        f.truncate(0)
+        f.close()
         
         """
         Run Test All Success
@@ -74,10 +105,10 @@ class TestApp(unittest.TestCase):
         # >>> {'disc1_rate': 10, 'vp_time': 13.3, 'disc2_rate': 9.2, 'disc3_rate': ''}
         self.assertListEqual([dictCheckValTest['disc1_rate'],dictCheckValTest['disc2_rate'],dictCheckValTest['disc3_rate'],dictCheckValTest['vp_time']] , [10,9.2,'',13.3])
         
-        #e) check values inserted as strings... insert min value for vo_time and average on discipline rate
-        dictCheckVal = { "disc1_rate":"8.6", "disc2_rate":"9", "disc3_rate":"string", "vp_time":"string"}
+        #e) check values inserted as strings... insert min value for vp_time and average on discipline rate
+        dictCheckVal = { "disc1_rate":"8.6", "disc2_rate":"10.0", "disc3_rate":"string", "vp_time":"string"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 8.6, 'vp_time': 0, 'disc2_rate': 9, 'disc3_rate': 5}
+        # >>> {'disc1_rate': 8.6, 'vp_time': 0, 'disc2_rate': 10, 'disc3_rate': 5}
         self.assertNotIsInstance(dictCheckValTest['disc3_rate'], str), self.assertEqual(dictCheckValTest['vp_time'],0)
         
         #f) check values exceed the threshold

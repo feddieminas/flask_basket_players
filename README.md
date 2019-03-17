@@ -2,8 +2,8 @@
 
 Basketball is a 5*5 team-spirit worldwide known sport. All players have different individual attributes relative to the position they play, whether this could be the height 
 (i.e. being a guard vs center) or skills (ex. scoring lots of points, making lots of rebounds etc). As generations pass, players across all continents change but some remain memorable for you even if
-they do not play currently. In addition, one would in some place (ex. whether on street or to a coffee place) be able to meet/see them, spend time and both sides could share knowledge, ideas 
-and emotions. The site provides you to insert these players, the top three disciplines on each player you admire and how much virtually one would spend relative to the place you choose
+they do not play currently. In addition, one would in some place (ex. whether on street or to a coffee place) be able to meet/see them, spend time and both sides share knowledge, ideas 
+and emotions. The site provides you to insert your players, the top three disciplines on each one you admire and how much virtually one would spend relative to the place you choose
 (brunch, coffee, street) to see your top five favorite athletes.        
 
 ## UX
@@ -14,29 +14,29 @@ and emotions. The site provides you to insert these players, the top three disci
 
 - The scope plane: 
   - Features :
-    - A login/logout Form
-    - Add Player - Edit / Delete Player Form
+    - A SignUp / login / logout Form
+    - Add Player Form - Edit / Delete Player Form
     - List Summary Charts and Table Information of your players
 
 - The structure plane: 
-  - Info is structured in a standard way. First page are input fields and button to Login to your account
-  - A List Summary and Add Player button
+  - Info is structured in a standard way. First page are input fields and buttons to SignUp - Login/Logout to your account.
+  - A Show List Summary and Add Player button
   - Two aspects (piechart, barcharts and table). Grouped displayed first (birth region and virtual spend charts), displayed second (table players whole summary) accompanied by an
     edit/delete individual player button
 
 - The skeleton plane: 
   - Page info represented from left to right (or top to bottom) concept :
-    - Minimal header text written with lots of indicative icons 
-    - Three buttons (show players, add a player, edit/deleting a player)
+    - Minimal header text written with lots of indicative icons, option and select lists.  
+    - Five buttons (SignUp, Login/Logout, show players, add a player, edit/deleting a player)
     - Two d3.js graphs (pie chart, horizontal bar chart)
-    - One Horizontal and vertical scrollable table
+    - One Horizontal and vertical auto scrollable table
 
 - The surface plane: 
-  - Colours : a darker navbar but a contrast white opaque and brighter colours to the body section for one to view the graphs per horizontal and vertical axis more clearly.
+  - Colours : darker navbar and fixed background image. Show brightness in input fields (for ex. radio buttons circle stroke in light blue to contrast) 
   - Semantic : header, nav, section, form, materialize (row, column grid, color, buttons), i tags
-  - Typography : google fonts and materialize libraries like table highlight class to demonstrate description. Material icons to highlight the input field meaning.
+  - Typography : roboto google font and materialize libraries like table highlight class to demonstrate description. Material icons to highlight the input field meaning.
   - Jinja helper to loop through html objects and also to pass info to JS. JS and JQuery for materialize js, show players existence and actions when document is loaded, 
-    graph creation and table scrolling. 
+    graph creation and table scrolling. Python for Backend-in-the-frontend.   
 
 ##### User Stories list:
 
@@ -44,16 +44,16 @@ and emotions. The site provides you to insert these players, the top three disci
   - I insert a summary table of existing players so that I can achieve
     - scrolling for responsive design
     - edit button at the end of each row per player, easy to adjust values to obtain user flexibility
-  - Main two chart types (barchart and piechart) and attributes chosen are distinct (birth region and virtual spend) to achieve diversity  
+  - Main two chart types (barchart and piechart) and attributes (birth region and virtual spend) chosen are distinct to achieve diversity  
   - Modal insert on edit and delete player to achieve a cross-check decision.
 
 - As a user : 
-  - Having several players registered, I would like to be displayed on a chart above my table, the top five players willing to spend more to meet in person.
-  - On Player forms, since there are several fields, I like the idea of having less fields to insert and more fields to choose.
+  - Having several players registered, I would like the top five players willing to spend more to meet in person, to be displayed on a chart above my table.
+  - On Player forms, since there are several fields, I like the idea of having less fields to insert text/number and having more fields to choose from a list.
   - As the rating is ranged from 1 to 10 on disciplines and 1 to 20 on virtual times, I like the idea of beeing able to insert a decimal and distinct
-    any close preference among disciplines, virtuals and players.
+    any close preference among disciplines, virtuals and players. 
 
-A mockup frame of the website, one could find it at the attached pdf file at the directory mockup_frame. db-schema on page 2 inside the pdf file.
+A mockup frame of the website, one could find it at the attached pdf file at the directory mockup_frame. noSQL schema on page 1 and 2 inside the pdf file.
 
 ## Features
 
@@ -64,20 +64,20 @@ A mockup frame of the website, one could find it at the attached pdf file at the
 
 ---
 
-Currently, the website provides with a general but on point overview of the subject. Additional plans to be implemented in the future would be :
+Additional plans to be implemented in the future would be :
 
 - Make deleting a player more flexible rather than having to go to the edit player to achieve it.
 - Login Form add minimum characters and an EmailJS forgot password.
 - More python data scientific
-  - Insert a text area field and one guest can comment per individual player if interested. Extract most common words with various players and plot categorical charts. 
+  - Insert a text area field for a guest to comment per individual player, if interested. Extract most common words with various players and plot categorical charts. 
   - Make virtual spend calculation more python data scientific and use category birth region, discipline and virtual spend fo anything regressed or classified.
 
 ### Features Left to Implement
 
-- Reorder the Table Summary for name to be at the first column and in absolute position. Therefore when one scrolls horizontally has a clearer picture of
-  the player. Currently the row is highlighted and is a helper.
+- Reorder the Table Summary for name to be at the first column and in absolute position. Therefore when one scrolls horizontally, it has a clearer picture of
+  the focused player. Currently the row is highlighted in beight green and is a helper.
 - Add a category list for people to be able to add more favorite disciplines from the already existing ones.
-- Fit a number percentage discrete label text on pie chart and two decimal points on rating and virtual timing (currently fits one decimal). 
+- Fit a number percentage discrete label text on pie chart, and two decimal points on rating and virtual times (currently fits one decimal). 
 
 ## Technologies Used
 
@@ -109,18 +109,19 @@ Currently, the website provides with a general but on point overview of the subj
 ## Testing
 
 - Used Python unittest module framework to test :
-  - flask login view succesfully registered
+  - flask insert_login view succesfully signed up, logged in and logout
   - custom functions for checking input fields (check values are correct) and select columns (for no duplicated selections and inserting defaults if intentional field(s) are empty)
-  - Name field is one rather than two (First Name, Surname), thus we test assumptions of a user entering the name by either inserting the surname or inserting both name and surname
-    - A sub function is to check the MongoDB whether a current Name written the same way exists with max having one spelling error 
+  - Name field inserted is a single one rather than two (First Name, Surname), thus we test assumptions of a user entering the name by either inserting the surname or inserting both name and surname.
+    - A sub function is to check the MongoDB whether a current Name field written the same way exists with max having one spelling error 
 
 ----
 
 Encountered issues:
 
-- Dealing with horizontal table scrolling and adjust to its window size
-- d3.js chart and labels orientation
+- Login and Sessions
 - python to js transfer data, ensuring that will account for all records listed
+- d3.js chart and labels orientation
+- Dealing with horizontal table scrolling and adjust to its window size
 
 ## Deployment
 
@@ -139,7 +140,7 @@ One could run locally by executing the app.py file and retrieve the URL to login
 
 ### Media
 
-- The photo in this section was obtained from [theartmad](https://theartmad.com/).
+- The background_img photo in this section was obtained from [clipart](https://www.clipart.email/clipart/sunset-silhouette-basketball-105479.html).
 
 ### Acknowledgements
 

@@ -14,7 +14,6 @@ nav .brand-logo {
     display: inline-block;
     font-size: 2.1rem;
     padding: 0;
-    font-weight: 500;
 }
 
 nav ul a { 
@@ -26,17 +25,20 @@ nav i.material-icons {
 }
 
 #bg-img {
-    background: url("basketball_background.jpg") no-repeat center center fixed; 
+    background: url("basketball_img.jpeg") no-repeat center center fixed; 
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;   
 }
 
-.opaqueoverlay {
-    background-color: rgba(224, 224, 224, 0.19);
+.btn_list { /* Login Page and List Summary Page button defaults */
+    height: 35px;
+    width: 120px;
+    line-height: 24px;
+    margin: 5px 5px;
+    padding: 0.4em;
 }
-
 
 /* Login Page */
 
@@ -68,7 +70,7 @@ nav i.material-icons {
 }
 
 .flex-outer > li:not(:last-child) {
-    margin-bottom: 20px;
+    margin-bottom: 35px;
 }
 
 .flex-outer li label, #headerLoginLi p {
@@ -98,6 +100,12 @@ nav i.material-icons {
     margin-top: 0;
 }
 
+#headerLoginLi button  {
+    width: 105px; 
+    margin-top: -3px;
+    margin-right: 0; 
+}
+
 .flex-outer li input {
     padding: 15px;
     border: none;
@@ -105,6 +113,10 @@ nav i.material-icons {
 
 .flex-outer li button {
     margin-left: auto;
+}
+
+.flex-outer li:last-child button {
+    margin-left: 0;
 }
 
 
@@ -155,15 +167,6 @@ nav i.material-icons {
 
 /* List Summary */
 
-
-.btn_list {
-    height: 35px;
-    width: 120px;
-    line-height: 24px;
-    margin: 5px 5px;
-    padding: 0.4em;
-}
-
 .btn-floating.btn-large { /* btn-floating is the Add Player Button with the plus sign  */
     width: 56px;
     height: 45px;
@@ -210,6 +213,12 @@ nav i.material-icons {
     background-color: #5cb85c; /* green */
 }
 
+.login-container div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;    
+}
 
 /* List Summary Table */
 
@@ -257,7 +266,7 @@ th {
     height: 40px; 
 }
 
-tr:nth-child(even){
+tr:nth-child(even) {
     background-color: rgba(61,61,63,0.18); 
 }
 
@@ -277,6 +286,9 @@ table.highlight>tbody>tr:hover{
    font-weight:400; 
 }
 
+.fw500 {
+    font-weight: 500;
+}    
 
 /* Media Queries */
 
@@ -285,6 +297,10 @@ table.highlight>tbody>tr:hover{
     nav .brand-logo {
         font-size: 0.975rem; 
     }
+    
+    #headerLoginLi p  {
+        max-width: 147px;
+    } 
     
     .btn-floating.btn-large i {
         padding-right: 10px;
@@ -308,6 +324,10 @@ table.highlight>tbody>tr:hover{
     nav .brand-logo {
         font-size: 1.25rem; 
     }
+    
+    #headerLoginLi p  {
+        max-width: 215px;
+    }   
     
     .select-wrapper input.select-dropdown {
         font-size: 13px;
