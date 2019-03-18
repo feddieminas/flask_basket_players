@@ -4,7 +4,7 @@ Basketball is a 5*5 team-spirit worldwide known sport. All players have differen
 (i.e. being a guard vs center) or skills (ex. scoring lots of points, making lots of rebounds etc). As generations pass, players across all continents change but some remain memorable for you even if
 they do not play currently. In addition, one would in some place (ex. whether on street or to a coffee place) be able to meet/see them, spend time and both sides share knowledge, ideas 
 and emotions. The site provides you to insert your players, the top three disciplines on each one you admire and how much virtually one would spend relative to the place you choose
-(brunch, coffee, street) to see your top five favorite athletes.        
+(brunch, coffee, street) to see your top five favorites.        
 
 ## UX
 
@@ -14,7 +14,7 @@ and emotions. The site provides you to insert your players, the top three discip
 
 - The scope plane: 
   - Features :
-    - A SignUp / login / logout Form
+    - A SignUp / Login / Logout Form
     - Add Player Form - Edit / Delete Player Form
     - List Summary Charts and Table Information of your players
 
@@ -43,7 +43,7 @@ and emotions. The site provides you to insert your players, the top three discip
 - As a developer :
   - I insert a summary table of existing players so that I can achieve
     - scrolling for responsive design
-    - edit button at the end of each row per player, easy to adjust values to obtain user flexibility
+    - edit button at the end of each row per player, to easily adjust values to obtain user flexibility
   - Main two chart types (barchart and piechart) and attributes (birth region and virtual spend) chosen are distinct to achieve diversity  
   - Modal insert on edit and delete player to achieve a cross-check decision.
 
@@ -77,7 +77,7 @@ Additional plans to be implemented in the future would be :
 - Reorder the Table Summary for name to be at the first column and in absolute position. Therefore when one scrolls horizontally, it has a clearer picture of
   the focused player. Currently the row is highlighted in beight green and is a helper.
 - Add a category list for people to be able to add more favorite disciplines from the already existing ones.
-- Fit a number percentage discrete label text on pie chart, and two decimal points on rating and virtual times (currently fits one decimal). 
+- Fit a number percentage discrete label text on pie chart, two decimal points on rating and virtual times (currently fits one decimal).
 
 ## Technologies Used
 
@@ -111,17 +111,16 @@ Additional plans to be implemented in the future would be :
 - Used Python unittest module framework to test :
   - flask insert_login view succesfully signed up, logged in and logout
   - custom functions for checking input fields (check values are correct) and select columns (for no duplicated selections and inserting defaults if intentional field(s) are empty)
-  - Name field inserted is a single one rather than two (First Name, Surname), thus we test assumptions of a user entering the name by either inserting the surname or inserting both name and surname.
-    - A sub function is to check the MongoDB whether a current Name field written the same way exists with max having one spelling error 
+  - Name field inserted is a single one rather than two (First Name, Surname), thus we test assumptions of a user entering the name by either inserting only the surname or inserting both name and surname.
+    - A sub function is to check the MongoDB whether a current Name field written the same way it exists or not with max having one spelling error 
 
 ----
 
 Encountered issues:
 
-- Login and Sessions
 - python to js transfer data, ensuring that will account for all records listed
 - d3.js chart and labels orientation
-- Dealing with horizontal table scrolling and adjust to its window size
+- Dealing with horizontal-vertical table scrolling and adjust to its window size
 
 ## Deployment
 

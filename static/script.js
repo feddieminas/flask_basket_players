@@ -9,11 +9,16 @@ $(document).ready(function() {
     // horizontal table scrolling relative to window's width 
     $("#table-body").scroll(function ()
     {
-        
         let theChange = 0;
         width = $(window).width();
-        if (width >= 1000) {
+        if (width >= 1850) {
+            theChange = ((width-1850)/2) + 285;
+        }
+        else if (width >= 1000) {
             theChange = (width/1000) * 150;
+            if(width >= 1807 && width >= 1849) {
+                theChange+=(width-1800) / 7;
+            }
         }
         else if (width >= 900) {
             theChange = ((width/900) * 67.5);
@@ -31,13 +36,13 @@ $(document).ready(function() {
             theChange = (width/300) * 15;
         }          
         
-        $("#table-header").offset({ left: (-1*this.scrollLeft)+theChange }); 
+        $("#table-header").offset({ left: (-1*this.scrollLeft)+theChange });
     });
     
-    // set table height to be resized thus do not fall out the container
+    // set table height to be resized with a min value to release vertical scrolling for multi players
     function setTableBody()
     {
-        $("#table-body").height($("#tbl-container").height() - $("#table-header").height());
+        $("#table-body").height(Math.min(500, $("#tbl-container").height() - $("#table-header").height()));
     }
 
     ////////////////////////////////////////////////
@@ -280,9 +285,10 @@ $(document).ready(function() {
                 return "white";
             });                          
             
+        // table functionalities to set heights and not fall out of the container    
         setTableBody();
         $(window).resize(setTableBody);
-        $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height());    
+        $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height() + 35);    
 
     }
     
