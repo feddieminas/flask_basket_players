@@ -38,6 +38,7 @@ def insert_login(fileLogs,username,password,action, session_userID=None, LogOutF
             app.py
             
             _userPass = mongo.db.user_pass
+            
             # retrieve usernames found if any with inserted username input form
             userPassOther = _userPass.find({'user': user})
             for up in userPassOther:
@@ -62,7 +63,7 @@ def insert_login(fileLogs,username,password,action, session_userID=None, LogOutF
             '''
             app.py
             
-            bcrypt.generate_password_hash(passwd).decode('utf-8')
+            hpasswd = bcrypt.generate_password_hash(passwd).decode('utf-8')
             '''
             ''' customFuncs.py '''             
             hpasswd = bcrypt.hashpw(passwd, bcrypt.gensalt()).decode('utf-8')
@@ -216,61 +217,56 @@ def insert_login(fileLogs,username,password,action, session_userID=None, LogOutF
             else:
                 ''' Not Logged In '''
                 return "sessionMsg = " + sessionMsg + " and redirect(url_for('get_username'))"
-
+    
 '''
 sub-function of checkVals 
-replace is defined in case one use comma in decimals (ex. 9,2) 
+reassign your string based on replaced value 
 '''
-def adjNums(key,val,adjval):
-    if any([len(val)<=2,val[-1]=='0' and len(val)-len(adjval)!=abs(1)]):
-        adjval=int(adjval)    
-    elif val[-1]=='0' and len(val)>2:
-        adjval=round(int(adjval.replace(',','.'))/10,1)
-    else:
-        divideMe = 1 if key[:2]=="di" and val[2]=="." else 10 
-        adjval=float(adjval.replace(',','.'))/divideMe
-        if any([key[:2]=="vp" and val[1]=="." and val!=str(adjval),len(str(adjval))>4]): adjval=round(int(adjval)/10,1)
-    return adjval
+def change_char(s, p, r):
+    return s[:p]+r+s[p+1:]
 
 ''' 
 check and adjust if necessary the three disciplines and virtual times values.
-extract special chars (+,-) and digits as a string and convert to a whole number
-or with one decimal if a guest has inserted any.
+round to one decimal, check if any str inserted or special chars, produce a number
 '''
-def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):  # Check Values
+def checkVals(disc1_rate,disc2_rate,disc3_rate,vp_time):
     dictCheckVal = { "disc1_rate":disc1_rate, "disc2_rate":disc2_rate, 
     "disc3_rate":disc3_rate, "vp_time":vp_time}
     
     for key, val in dictCheckVal.items():
-        try:
-            if val=="":
-                adjval = ""
-            else:
-                adjval = val[0] if val[0] in ['+','-'] else ''
-                adjval = "".join([adjval] + [v for v in val if v.isdigit()])
-                
-                adjvalLen = len(adjval)
-                if (key[:2]=="vp" and adjvalLen>3):
-                    adjval=adjval[:3] 
-                elif (key[:2]=="di" and adjvalLen>2):
-                    adjval=adjval[:2]
-                else:
-                    pass
-                
-                if adjval!="": 
-                    adjval= adjNums(key,val,adjval)    
-                
-                #final touch
-                if key[:2]=="vp":
-                    adjval = 0 if adjval=="" else adjval if adjval<0 else adjval
-                    if adjval>20: adjval=20 # max value to be inserted
-                else:
-                    adjval = 5 if adjval=="" else adjval if adjval<0 else adjval
-                    if adjval>10: adjval=10 # max value to be inserted
-        finally:
-            dictCheckVal[key]=adjval
+        val = val.replace(',','.')
         
+        PointCount = val.count(".")
+        idx = -1
+        while PointCount>1:
+            idx+= 1
+            PointFounder = val.find(".", idx+1)
+            if PointFounder!=-1: val = change_char(val, int(PointFounder), "a")
+            PointCount-=1
+        
+        adjval = "".join([s for s in re.findall(r'-?\d*\.?\d*', val)])
+        
+        adjvalLen = len(adjval)
+        adjNums = bool(adjvalLen>0)
+        if adjNums:
+            adjval = adjval[:-1] if adjval[-1] =="." else adjval
+        
+        if not val == "":   
+            if key[:2]=="vp":
+                if adjNums:
+                    adjval= round(float(adjval[:min(adjvalLen,5)]),1)
+                adjval = 0.0 if adjval=="" else adjval if adjval<0.0 else adjval
+                if adjval>20.0: adjval=20.0 # max value to be inserted
+            else:
+                if adjNums:
+                    adjval= round(float(adjval[:min(adjvalLen,4)]),1)
+                adjval = 5.0 if adjval=="" else adjval if adjval<0.0 else adjval
+                if adjval>10.0: adjval=10.0 # max value to be inserted        
+        
+        dictCheckVal[key]=adjval
+    
     return dictCheckVal
+
 
 '''
 Check Disciplines Select form for any duplicates. 

@@ -71,51 +71,57 @@ class TestApp(unittest.TestCase):
     
     def test_for_input_numbers_on_playerforms(self):
         '''
-        guests can rate the discipline up to the number of 10 with max one decimal. Virtuals can rate them up to 20 with max one decimal.
+        guests can rate the discipline up to the number of 10 with one decimal. Virtuals can rate them up to 20 with one decimal.
         need to check for correct and not inputs in those fields
         '''
+        
         #a) check proper whole numbers
         dictCheckVal = { "disc1_rate":"8", "disc2_rate":"9", "disc3_rate":"7", "vp_time":"2"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 8, 'vp_time': 2, 'disc2_rate': 9, 'disc3_rate': 7}
-        self.assertIsInstance(dictCheckValTest['disc1_rate'], int)
+        # >>> {'disc1_rate': 8.0, 'vp_time': 2.0, 'disc3_rate': 7.0, 'disc2_rate': 9.0}
+        self.assertIsInstance(dictCheckValTest['disc1_rate'], float)
         
         #b) check whole and float numbers with one decimal (allowed) and exceeded ones (we trim them) 
         dictCheckVal = { "disc1_rate":"8", "disc2_rate":"9.287", "disc3_rate":"9.5", "vp_time":"3.456"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 8, 'vp_time': 3.4, 'disc2_rate': 9.2, 'disc3_rate': 9.5}
-        self.assertIsInstance(dictCheckValTest['vp_time'], float), self.assertNotEqual(str(dictCheckValTest['disc2_rate']), dictCheckVal['disc2_rate'])
+        # >>> {'disc1_rate': 8.0, 'vp_time': 3.5, 'disc3_rate': 9.5, 'disc2_rate': 9.3}
+        self.assertNotEqual(str(dictCheckValTest['disc2_rate']), dictCheckVal['disc2_rate'])
         
         #c) check empty and float numbers with one decimal (allowed) and exceeded ones (we trim them) 
         dictCheckVal = { "disc1_rate":"8.86", "disc2_rate":"9.2", "disc3_rate":"", "vp_time":"3.3"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 8.8, 'vp_time': 3.3, 'disc2_rate': 9.2, 'disc3_rate': ''}
-        self.assertEqual(float(dictCheckVal['disc1_rate'][:3]),dictCheckValTest['disc1_rate'])
+        # >>> {'disc1_rate': 8.9, 'vp_time': 3.3, 'disc3_rate': '', 'disc2_rate': 9.2}
         self.assertEqual([dictCheckValTest['disc3_rate'],dictCheckValTest['disc2_rate'],dictCheckValTest['vp_time']] , ["",9.2,3.3])
         
         #d) concept like b) 
         dictCheckVal = { "disc1_rate":"8.1", "disc2_rate":"9.0", "disc3_rate":"10.8645", "vp_time":"15.6"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 8.1, 'vp_time': 15.6, 'disc2_rate': 9.0, 'disc3_rate': 10.0}
+        # >>> {'disc1_rate': 8.1, 'vp_time': 15.6, 'disc3_rate': 10.0, 'disc2_rate': 9.0}
         self.assertListEqual([dictCheckValTest['disc1_rate'],dictCheckValTest['disc2_rate'],dictCheckValTest['disc3_rate'],dictCheckValTest['vp_time']] , [8.1,9.0,10.0,15.6])
         
-        #d) concept like c) 
+        #e) concept like c) 
         dictCheckVal = { "disc1_rate":"11.645", "disc2_rate":"9,287", "disc3_rate":"", "vp_time":"13.365"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 10, 'vp_time': 13.3, 'disc2_rate': 9.2, 'disc3_rate': ''}
-        self.assertListEqual([dictCheckValTest['disc1_rate'],dictCheckValTest['disc2_rate'],dictCheckValTest['disc3_rate'],dictCheckValTest['vp_time']] , [10,9.2,'',13.3])
+        # >>> {'disc1_rate': 10.0, 'vp_time': 13.4, 'disc3_rate': '', 'disc2_rate': 9.3}
+        self.assertListEqual([dictCheckValTest['disc1_rate'],dictCheckValTest['disc2_rate'],dictCheckValTest['disc3_rate'],dictCheckValTest['vp_time']] , [10.0,9.3,'',13.4])
         
-        #e) check values inserted as strings... insert min value for vp_time and average on discipline rate
+        #f) check values inserted as strings... insert min value for vp_time and average on discipline rate
         dictCheckVal = { "disc1_rate":"8.6", "disc2_rate":"10.0", "disc3_rate":"string", "vp_time":"string"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])
-        # >>> {'disc1_rate': 8.6, 'vp_time': 0, 'disc2_rate': 10, 'disc3_rate': 5}
+        # >>> {'disc1_rate': 8.6, 'vp_time': 0.0, 'disc3_rate': 5.0, 'disc2_rate': 10.0}
         self.assertNotIsInstance(dictCheckValTest['disc3_rate'], str), self.assertEqual(dictCheckValTest['vp_time'],0)
         
-        #f) check values exceed the threshold
+        #g) check values exceed the threshold
         dictCheckVal = { "disc1_rate":"18.6", "disc2_rate":"13", "disc3_rate":"20", "vp_time":"25.3"}
         dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"])  
-        # >>> {'disc1_rate': 10, 'vp_time': 20, 'disc2_rate': 10, 'disc3_rate': 10}
-        self.assertEqual(dictCheckValTest['disc3_rate'],10), self.assertEqual(dictCheckValTest['vp_time'],20)
+        # >>> {'disc1_rate': 10.0, 'vp_time': 20.0, 'disc3_rate': 10.0, 'disc2_rate': 10.0}
+        self.assertEqual(dictCheckValTest['disc3_rate'],10.0), self.assertEqual(dictCheckValTest['vp_time'],20.0)
+        
+        #g) check input typos and concat, negatives
+        dictCheckVal = { "disc1_rate":"jj.9", "disc2_rate":"9.ghj", "disc3_rate":"0ivivi.9", "vp_time":"-9..c.r;!!rk5"}
+        dictCheckValTest = customFuncs.checkVals(dictCheckVal["disc1_rate"],dictCheckVal["disc2_rate"],dictCheckVal["disc3_rate"],dictCheckVal["vp_time"]) 
+        # >>> {'vp_time': -9.5, 'disc1_rate': 0.9, 'disc3_rate': 0.9, 'disc2_rate': 9.0}
+        self.assertEqual(dictCheckValTest['disc3_rate'],0.9), self.assertEqual(dictCheckValTest['disc2_rate'],9.0), self.assertEqual(dictCheckValTest['disc1_rate'],0.9)
 
         """
         Run Test All Success

@@ -28,7 +28,7 @@
             </div>       
           </div>
   
-          <div class="col s9">
+          <div class="col s9 m10">
             <input name="optGender" type="radio" id="genderM" value="M" checked/>
               <label class="white-text" for="genderM">M</label>
               <input name="optGender" type="radio" id="genderF" value="F"/>
@@ -49,7 +49,7 @@
             </div>       
           </div>
                 
-          <div class="col s9">
+          <div class="col s9 m10">
             <input class="with-gap" name="optPosition" type="radio" id="guardP" value="G" checked/>
             <label class="white-text" for="guardP">Guard</label>
             <input class="with-gap" name="optPosition" type="radio" id="forwardP" value="F"/>
@@ -72,7 +72,7 @@
             </div>       
           </div>
                 
-          <div class="col s9">
+          <div class="col s9 m10">
             <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="Europe"/>
             <label class="white-text" for="EuropeBR">Europe</label>
             <input class="with-gap" name="optBirthRegion" type="radio" id="AmericaBR" value="America" checked/>
@@ -90,7 +90,7 @@
 
       <!-- DISCIPLINES --> 
       
-      {% set discs=[('One','disc1'),('Two','disc2'),('Three','disc3')] %}
+      {% set discs=[('Gold','disc1'),('Silver','disc2'),('Bronze','disc3')] %}
       
       {% for k,d in discs %}      
       
@@ -118,8 +118,8 @@
                 </div>
               </div>  
               <div class="input-field col s7 m8">
-                <input class="white-text" id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="3">
-                <label class="white-text rate-vt-form-label_player" for="{{ d }}_rate">0-10 | fits one dec.</label>
+                <input class="white-text" id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="4">
+                <label class="white-text rate-vt-form-label_player" for="{{ d }}_rate">0 - 10</label>
               </div>                   
             </div>       
           </div>
@@ -150,8 +150,8 @@
                 </div>
               </div>  
               <div class="input-field col s7 m8">
-                <input class="white-text" id="vp_time" name="vp_time" type="text" data-length="4">
-                <label class="white-text rate-vt-form-label_player" for="vp_time">0-20 | fits one dec.</label>
+                <input class="white-text" id="vp_time" name="vp_time" type="text" data-length="5">
+                <label class="white-text rate-vt-form-label_player" for="vp_time">0 - 20</label>
               </div>                   
             </div>       
           </div>      

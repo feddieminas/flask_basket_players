@@ -24,6 +24,14 @@ nav i.material-icons {
     font-size: 30px;
 }
 
+.side-nav {
+    width:44%;
+}  
+
+.side-nav li>a>i.material-icons { 
+    margin-right: 16px;
+}
+
 #bg-img {
     background: url("basketball_img.jpeg") no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -100,23 +108,27 @@ nav i.material-icons {
     margin-top: 0;
 }
 
-#headerLoginLi button  {
-    width: 105px; 
-    margin-top: -3px;
-    margin-right: 0; 
-}
-
 .flex-outer li input {
     padding: 15px;
     border: none;
+}
+
+.flex-outer li:last-child { 
+    position: relative;
 }
 
 .flex-outer li button {
     margin-left: auto;
 }
 
-.flex-outer li:last-child button {
-    margin-left: 0;
+.flex-outer li button:nth-child(1) { 
+    position: absolute;
+    left: 0;
+}
+
+.flex-outer li button:nth-child(2) { 
+    position: absolute;
+    right: 0;
 }
 
 
@@ -149,11 +161,14 @@ nav i.material-icons {
 }
 
 .input-field label.white-text.rate-vt-form-label_player { /* Disciplines and Virtuals Input fields */
-    font-size: 11px;
+    font-size: 1rem;
 }
 
+h6 {
+    font-size: 0.95rem;
+}
 
-/* Forms editDel Player Modal */
+/* Forms EditDel Player Modal */
 
 
 .modal {
@@ -267,7 +282,7 @@ th {
 }
 
 tr:nth-child(even) {
-    background-color: rgba(61,61,63,0.18); 
+    background-color: rgba(61,61,63,0.1); 
 }
 
 table.highlight>tbody>tr:hover{
@@ -325,6 +340,10 @@ table.highlight>tbody>tr:hover{
         font-size: 1.25rem; 
     }
     
+    .side-nav {
+        width:35%;
+    }
+    
     #headerLoginLi p  {
         max-width: 215px;
     }   
@@ -343,6 +362,10 @@ table.highlight>tbody>tr:hover{
         font-size: 1.75rem; 
     }      
     
+    .side-nav {
+        width:25%;
+    }    
+    
     .select-form-label-h_player {
         font-size: 13px;
     }    
@@ -359,6 +382,10 @@ table.highlight>tbody>tr:hover{
 
     
 @media screen and (min-width: 992px) {  
+    .side-nav {
+        width:25%;
+    }  
+    
     .select-form-label-h_player {
         font-size: 13.5px; 
     }
@@ -366,10 +393,6 @@ table.highlight>tbody>tr:hover{
     .select-wrapper input.select-dropdown {
         font-size: 1rem;
     }  
-    
-    .input-field label.white-text.rate-vt-form-label_player {
-        font-size: 13px;
-    } 
     
     .modal, .msg {
         width:45%;

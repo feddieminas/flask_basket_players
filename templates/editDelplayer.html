@@ -28,7 +28,7 @@
             </div>       
           </div>
 
-          <div class="col s9">
+          <div class="col s9 m10">
             {% if player['gender']=="M" %}
               <input name="optGender" type="radio" id="genderM" value="{{ player['gender'] }}" checked/>
               <label class="white-text" for="genderM">M</label>
@@ -56,7 +56,7 @@
             </div>       
           </div>
               
-          <div class="col s9">
+          <div class="col s9 m10">
             {% if player['position']=="G" %}
               <input class="with-gap" name="optPosition" type="radio" id="guardP" value="{{ player['position'] }}" checked/>
               <label class="white-text" for="guardP">Guard</label>
@@ -95,7 +95,7 @@
             </div>       
           </div>
               
-          <div class="col s9">
+          <div class="col s9 m10">
             {% if player['birth_region']=="Europe" %}
               <input class="with-gap" name="optBirthRegion" type="radio" id="EuropeBR" value="{{ player['birth_region'] }}" checked/>
               <label class="white-text" for="EuropeBR">Europe</label>
@@ -180,7 +180,7 @@
       
       <!-- DISCIPLINES -->
       
-      {% set discs=[('One','disc1'),('Two','disc2'),('Three','disc3')] %}
+      {% set discs=[('Gold','disc1'),('Silver','disc2'),('Bronze','disc3')] %}
       
       {% for k,d in discs %}
       
@@ -188,7 +188,7 @@
           <div class="input-field col s7 m6">
             <i class="material-icons prefix white icons_player">poll</i>
             <select id="{{ d }}" name="{{ d }}" class="white-text">
-              <option value="" disabled selected>Choose Disc. {{ k }}</option>
+              <option value="" selected>Choose Disc. {{ k }}</option>
               {% for disc in disciplines %}
                 {% if disc == player['discipline'][d][0] %}
                   <option value="{{player['discipline'][d][0]}}" selected>{{player['discipline'][d][0] | upper}}</option>
@@ -212,8 +212,8 @@
                 </div>
               </div>  
               <div class="input-field col s7 m8">
-                <input class="white-text" id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="3" value="{{ player['discipline'][d][1] }}">
-                <label class="white-text rate-vt-form-label_player" for="{{ d }}_rate">0-10 | fits one dec.</label>
+                <input class="white-text" id="{{ d }}_rate" name="{{ d }}_rate" type="text" data-length="4" value="{{ player['discipline'][d][1] }}">
+                <label class="white-text rate-vt-form-label_player" for="{{ d }}_rate">0 - 10</label>
               </div>                   
             </div>       
           </div>
@@ -248,8 +248,8 @@
                 </div>
               </div>  
               <div class="input-field col s7 m8">
-                <input class="white-text" id="vp_time" name="vp_time" type="text" data-length="4" value="{{ player['virtual_meet']['times_see'] }}">
-                <label class="white-text rate-vt-form-label_player" for="vp_time">0-20 | fits one dec.</label>
+                <input class="white-text" id="vp_time" name="vp_time" type="text" data-length="5" value="{{ player['virtual_meet']['times_see'] }}">
+                <label class="white-text rate-vt-form-label_player" for="vp_time">0 - 20</label>
               </div>                   
             </div>       
           </div>      

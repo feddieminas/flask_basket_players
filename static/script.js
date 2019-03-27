@@ -6,6 +6,13 @@ $(document).ready(function() {
     $(".character-counter").css({'color': 'white'});
     $('#modal_edit').modal(); $('#modal_dele').modal();
     
+    // sets an issue on large tablets and desktop, thus you make virtual times more linear with rating columns
+    if ($('input#vp_time').length) {
+        $(window).on('resize', function(){
+            $('input#vp_time').css({'width':$('input#disc3_rate').width() + "px", transition: 'width 0.5s ease-in-out 0s'});
+        }).resize();
+    }
+    
     // horizontal table scrolling relative to window's width 
     $("#table-body").scroll(function ()
     {
@@ -179,9 +186,37 @@ $(document).ready(function() {
 
         //// D3 BAR CHART - TOP FIVE PLAYERS GUEST WILLING TO SPEND TIME - vals through html document loaded ////                
                 
-        let barchartVals = [];
+        let barchartVals = []; 
+        let myIndexdict = {"4": "disc1", "5": "disc2", "6": "disc3"}, colT="transparent";
         $('.player').each(function(i, obj) {
             barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});  
+            
+            // while looping through each player, insert the bar rate length rate per layer
+            let result = transData[i]["discipline"];
+            for (let j=4; j<7; j++) {
+                let resultVal = result[myIndexdict[String(j)]][1];
+                resultVal = resultVal=="" ? 0 : resultVal;
+                let percentFill = Math.min(parseFloat((resultVal*10).toFixed(2)), 100), percentTransp = percentFill;
+                let colF1=null, colF2=null;
+                switch (j) {
+                    case 4:
+                        colF1="rgba(175, 132, 27, 0.7)", colF2="rgb(191, 159, 82)";
+                        break;
+                    case 5:
+                        colF1="rgba(115, 114, 114, 0.7)", colF2="rgb(130, 125, 125)"; 
+                        break;
+                    case 6:
+                        colF1="rgba(140, 86, 34, 0.7)", colF2="rgb(195, 109, 6)";
+                        break;
+                }   
+            
+                $(this).find("td:eq(" + j + ")").css({background:"-moz-linear-gradient(left,"+colF1+" "+"0%, "+colF2+" "+percentFill+"%," +colT+" "+percentTransp+"%)"});
+                $(this).find("td:eq(" + j + ")").css({background:"-webkit-gradient(left top,right top, color-stop(0%,"+colF1+"), color-stop("+percentFill+"%,"+colF2+"), color-stop("+percentTransp+"%,"+colT+"))"});
+                $(this).find("td:eq(" + j + ")").css({background:"-webkit-linear-gradient(left,"+colF1+" "+"0%, "+colF2+" "+percentFill+"%," +colT+" "+percentTransp+"%)"});
+                $(this).find("td:eq(" + j + ")").css({background:"-o-linear-gradient(left,"+colF1+" "+"0%, "+colF2+" "+percentFill+"%," +colT+" "+percentTransp+"%)"});
+                $(this).find("td:eq(" + j + ")").css({background:"-ms-linear-gradient(left,"+colF1+" "+"0%, "+colF2+" "+percentFill+"%," +colT+" "+percentTransp+"%)"});
+                $(this).find("td:eq(" + j + ")").css({background:"linear-gradient(to right,"+colF1+" "+"0%, "+colF2+" "+percentFill+"%," +colT+" "+percentTransp+"%)"});
+            }
         }); 
                 
         valsCount = barchartVals.length;
@@ -288,8 +323,8 @@ $(document).ready(function() {
         // table functionalities to set heights and not fall out of the container    
         setTableBody();
         $(window).resize(setTableBody);
-        $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height() + 35);    
-
+        $("#tbl-container").height($("#table-text-header").height() + $("#table-header").height() + $("#table-body").height() + 65); 
+        
     }
     
 });

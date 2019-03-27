@@ -46,6 +46,8 @@ and emotions. The site provides you to insert your players, the top three discip
     - edit button at the end of each row per player, to easily adjust values to obtain user flexibility
   - Main two chart types (barchart and piechart) and attributes (birth region and virtual spend) chosen are distinct to achieve diversity  
   - Modal insert on edit and delete player to achieve a cross-check decision.
+  - Enabled caption Choose Discipline on Edit Player form select, to achieve a user being flexible to reset his decision to null and/or decide later. 
+    Adding an NA row at the select list on this occasion could cause disruption.   
 
 - As a user : 
   - Having several players registered, I would like the top five players willing to spend more to meet in person, to be displayed on a chart above my table.
