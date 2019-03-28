@@ -57,7 +57,9 @@ $(document).ready(function() {
     // As a single input of Name is provided, need to check whether a guest will insert both name or surname
     // or only the surname. Apart from a whitespace or a tab, we include the possibility of separate them with dot and comma 
     // (ex. michael jordan - michael.jordan - michael,jordan). 
-    function hasNameSurname(s) {return /[,.\s\/]/g.test(s);}
+    function hasNameSurname(s) {
+        return /[,.\s\/]/g.test(s);
+    }
     
     function findSplitSeparator(s) {
         match = /[,.\s\/]/g.exec(s);
