@@ -22,15 +22,15 @@
 <!-- chart section. piechart for ranging favorite player's region and top 5 classification of admired players -->
 <section> 
     <div class="row visualswitcher"> 
-        <div class="col s12 m5 xl4">
+        <div class="col s12 m5 l5 xl4">
             <div class="col s7 offset-s2">
                 <p id="headerPSpanPos" class="white-text fw300">BIRTH_REGION <span><i class="material-icons">place</i></span></p>
             </div>
             <div class="col s12 m12" id="birth_region"></div>
         </div>
-        <div class="col s12 m7 xl6">
+        <div class="col s12 m6 offset-m1 l7 xl5">
             <div class="col s6 offset-s2">
-                <p class="white-text fw300">VIRTUAL_SPEND &#36</p>
+                <p class="white-text fw300" style="min-width: 150px;">VIRTUAL_SPEND &#36;</p>
             </div>
             <div class="col s12 m12" id="virtual_spend_top"></div>
         </div>    
@@ -93,7 +93,7 @@
 {% block morescripts %}
 <script type="text/javascript">
 
-    /* retrieve birth region records to proceed with d3 piechart and discipline records to create "spark lines" on its table cells. 
+    /* retrieve birth region records to proceed with d3 piechart, discipline records to create "spark lines" on its table cells and virtual place to insert into bar chart texts. 
     name and virtual attrs needed for barchart due to runtime funcs inserted, able to loop and retrieve all players when document is loaded */
     function array_pyToJS(ubpJS) {
         if (!ubpJS || ubpJS === "") {

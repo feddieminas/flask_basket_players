@@ -115,6 +115,7 @@ nav i.material-icons {
 
 .flex-outer li:last-child { 
     position: relative;
+    margin-top: 40px;
 }
 
 .flex-outer li button {
@@ -195,13 +196,13 @@ h6 {
 
 #headerPSpanPos { /* id for the span's list paragraph header of the Birth Region vs its material icon header */
     position: relative;
+    min-width: 100px;
 }
 
 #headerPSpanPos span {
     position: absolute;
     top: -6px;
 }
-
 
 /* Flash Messages */
 
@@ -329,10 +330,11 @@ table.highlight>tbody>tr:hover{
         font-size: 11.5px;
     }
     
-    .barchart {
-        transform: translate(-10px,0);
+    .barchart { /* left-align the bar chart for smaller devices */
+        transform: translate(-20px,0);
         transition: transform 0.3s ease-in-out 0s;
     }
+    
 }
 
 @media (min-width: 401px) and (max-width:767px) {
@@ -352,9 +354,10 @@ table.highlight>tbody>tr:hover{
         font-size: 13px;
     }    
     
-    .barchart {
-        transform: translate(-20px,0);
-    }    
+    .barchart {  /* left-align the bar chart for smaller devices */ 
+        transform: translate(-30px,0);
+        transition: transform 0.3s ease-in-out 0s;
+    }     
 }
 
 @media (min-width: 768px) and (max-width: 991px) {    
@@ -376,8 +379,12 @@ table.highlight>tbody>tr:hover{
     
     .modal, .msg {
         width:65%;
-    }    
+    }   
     
+    .barchart {  /* left-align the bar chart for tablets */ 
+        transform: translate(-20%,0);
+        transition: transform 0.3s ease-in-out 0s;
+    }       
 }    
 
     

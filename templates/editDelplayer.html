@@ -188,7 +188,7 @@
           <div class="input-field col s7 m6">
             <i class="material-icons prefix white icons_player">poll</i>
             <select id="{{ d }}" name="{{ d }}" class="white-text">
-              <option value="" selected>Choose Disc. {{ k }}</option>
+              <option value="" selected>Choose Disc. {{ k }}</option> <!-- not disabled to enable users to choose a null discipline -->
               {% for disc in disciplines %}
                 {% if disc == player['discipline'][d][0] %}
                   <option value="{{player['discipline'][d][0]}}" selected>{{player['discipline'][d][0] | upper}}</option>

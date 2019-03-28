@@ -6,7 +6,7 @@ $(document).ready(function() {
     $(".character-counter").css({'color': 'white'});
     $('#modal_edit').modal(); $('#modal_dele').modal();
     
-    // sets an issue on large tablets and desktop, thus you make virtual times more linear with rating columns
+    // sets an issue on large tablets and desktop, thus you make virtual times field on Add and Player forms more linear with rating columns
     if ($('input#vp_time').length) {
         $(window).on('resize', function(){
             $('input#vp_time').css({'width':$('input#disc3_rate').width() + "px", transition: 'width 0.5s ease-in-out 0s'});
@@ -121,7 +121,7 @@ $(document).ready(function() {
             return d.value>0;
         });
                 
-        const w = 300;
+        const w = 280;
         const h = 250;
         const r = Math.min(w, h) / 2;
         
@@ -184,23 +184,23 @@ $(document).ready(function() {
             .text( function(d, i) {return piechartVals[i].label.toUpperCase() ;});        
 
 
-        //// D3 BAR CHART - TOP FIVE PLAYERS GUEST WILLING TO SPEND TIME - vals through html document loaded ////                
+        //// D3 BAR CHART - TOP FIVE PLAYERS GUEST WILLING TO SPEND TIME - vals through html document loaded, virtual place through py and jinja ////                
                 
         let barchartVals = []; 
         let myIndexdict = {"4": "disc1", "5": "disc2", "6": "disc3"}, colT="transparent";
         $('.player').each(function(i, obj) {
-            barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text())});  
+            barchartVals.push({"name": $(this).find("td:eq(1)").text(),"value": parseFloat($(this).find("td:eq(8)").text()), "key": transData[i]["virtual_meet"]["go_for"]});  
             
             // while looping through each player, insert the bar rate length rate per layer
             let result = transData[i]["discipline"];
             for (let j=4; j<7; j++) {
                 let resultVal = result[myIndexdict[String(j)]][1];
-                resultVal = resultVal=="" ? 0 : resultVal;
+                resultVal = resultVal=="" || Number(resultVal)<0 ? 0 : resultVal;
                 let percentFill = Math.min(parseFloat((resultVal*10).toFixed(2)), 100), percentTransp = percentFill;
                 let colF1=null, colF2=null;
                 switch (j) {
                     case 4:
-                        colF1="rgba(175, 132, 27, 0.7)", colF2="rgb(191, 159, 82)";
+                        colF1="rgba(117, 89, 20, 0.7)", colF2="rgb(191, 159, 82)";
                         break;
                     case 5:
                         colF1="rgba(115, 114, 114, 0.7)", colF2="rgb(130, 125, 125)"; 
@@ -229,6 +229,7 @@ $(document).ready(function() {
         barchartVals.map(function(item) {
             item.name = fitName(item.name);
             if (item.value<=0) {item.value=0}
+            item.key = item.key.slice(0,2).toUpperCase();
         });       
                 
         const maxVal = barchartVals[valsCount-1]["value"];
@@ -236,12 +237,12 @@ $(document).ready(function() {
                 
         const margin = { 
                 top: 5,
-                right: 45,
+                right: 80,
                 bottom: 0,
                 left: 105
             };   
                     
-        const width = 450 - margin.left - margin.right;
+        const width = 405 - margin.left - margin.right; 
                 
         let height = 50 * barchartVals.length;
         height = height - margin.top - margin.bottom; 
@@ -314,7 +315,7 @@ $(document).ready(function() {
                 return x(d.value) + 3;
             })
             .text(function (d) {
-                return d.value;
+                return d.key + " - " + d.value;
             })
             .attr("fill", function(d) {
                 return "white";

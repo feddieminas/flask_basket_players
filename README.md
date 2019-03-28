@@ -32,7 +32,7 @@ and emotions. The site provides you to insert your players, the top three discip
     - One Horizontal and vertical auto scrollable table
 
 - The surface plane: 
-  - Colours : darker navbar and fixed background image. Show brightness in input fields (for ex. radio buttons circle stroke in light blue to contrast) 
+  - Colours : darker navbar and fixed background image. Show brightness in input fields (for ex. radio buttons circle stroke in light blue to contrast). Linear-gradient for td "spark lines".
   - Semantic : header, nav, section, form, materialize (row, column grid, color, buttons), i tags
   - Typography : roboto google font and materialize libraries like table highlight class to demonstrate description. Material icons to highlight the input field meaning.
   - Jinja helper to loop through html objects and also to pass info to JS. JS and JQuery for materialize js, show players existence and actions when document is loaded, 
@@ -68,18 +68,20 @@ A mockup frame of the website, one could find it at the attached pdf file at the
 
 Additional plans to be implemented in the future would be :
 
+- Login Form EmailJS forgot password.
+- Horizontal bar chart group by player's position also rather than existing overall. 
 - Make deleting a player more flexible rather than having to go to the edit player to achieve it.
-- Login Form add minimum characters and an EmailJS forgot password.
+- Insert table pagination, displaying fifteen players per page. 
 - More python data scientific
   - Insert a text area field for a guest to comment per individual player, if interested. Extract most common words with various players and plot categorical charts. 
-  - Make virtual spend calculation more python data scientific and use category birth region, discipline and virtual spend fo anything regressed or classified.
+  - Make virtual spend calculation more algorithmic and use category birth region, discipline and virtual spend fo anything regressed or classified.
 
 ### Features Left to Implement
 
 - Reorder the Table Summary for name to be at the first column and in absolute position. Therefore when one scrolls horizontally, it has a clearer picture of
   the focused player. Currently the row is highlighted in beight green and is a helper.
 - Add a category list for people to be able to add more favorite disciplines from the already existing ones.
-- Fit a number percentage discrete label text on pie chart, two decimal points on rating and virtual times (currently fits one decimal).
+- Highlight number percentage when hovering on each arc at the pie chart, possibility of two decimal points on rating and virtual times at player forms (currently fits a decimal).
 
 ## Technologies Used
 
@@ -112,7 +114,7 @@ Additional plans to be implemented in the future would be :
 
 - Used Python unittest module framework to test :
   - flask insert_login view succesfully signed up, logged in and logout
-  - custom functions for checking input fields (check values are correct) and select columns (for no duplicated selections and inserting defaults if intentional field(s) are empty)
+  - custom functions for checking input fields (check values are correct and adjust) and select columns (for no duplicated selections and inserting defaults if intentional field(s) are empty)
   - Name field inserted is a single one rather than two (First Name, Surname), thus we test assumptions of a user entering the name by either inserting only the surname or inserting both name and surname.
     - A sub function is to check the MongoDB whether a current Name field written the same way it exists or not with max having one spelling error 
 

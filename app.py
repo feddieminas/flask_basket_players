@@ -168,8 +168,8 @@ def get_list():
     ''' Guest player records retrieve '''
     _ubp=mongo.db.users_basket_players.find({'userID':int(session["userID"])})
     
-    ''' Guest player records retrieve birth region, store it as JSON to move into JS script  '''
-    _ubpCopy = mongo.db.users_basket_players.find({'userID':int(session["userID"]) }, {"birth_region": 1,"discipline": 1,"_id":0 })
+    ''' Guest player records retrieve birth region, disciplines and virtual place, store it as JSON to move into JS script  '''
+    _ubpCopy = mongo.db.users_basket_players.find({'userID':int(session["userID"]) }, {"birth_region": 1,"discipline": 1,"virtual_meet.go_for": 1,"_id":0 })
     ubpCopyForJS = dumps(_ubpCopy)
     
     ''' flask string messages for add/edit/delete and already exists player '''
