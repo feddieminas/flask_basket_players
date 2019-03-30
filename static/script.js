@@ -222,7 +222,7 @@ $(document).ready(function() {
         }); 
                 
         valsCount = barchartVals.length;
-        if (valsCount>5) {valsCount=5};
+        if (valsCount>5) {valsCount=5;}
                 
         barchartVals = barchartVals.sort(function (a, b) {
                 return d3.descending(a.value, b.value);
@@ -230,7 +230,7 @@ $(document).ready(function() {
                 
         barchartVals.map(function(item) {
             item.name = fitName(item.name);
-            if (item.value<=0) {item.value=0}
+            if (item.value<=0) {item.value=0;}
             item.key = item.key.slice(0,2).toUpperCase();
         });       
                 
