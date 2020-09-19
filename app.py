@@ -1,4 +1,6 @@
 import os
+if os.path.exists("env.py"):
+  import env 
 from flask_bcrypt import Bcrypt
 from collections import Counter
 from flask import Flask, render_template, redirect, request, url_for, session, flash
@@ -14,8 +16,8 @@ bcrypt = Bcrypt(app)
 
 app.secret_key = os.urandom(8)
 
-app.config["MONGO_DBNAME"] = 'dcd_basketball'
-app.config["MONGO_URI"] = 'mongodb://root:dcd_basketball1234@ds119049.mlab.com:19049/dcd_basketball'
+app.config["MONGO_DBNAME"] = os.environ.get('MONGODB')
+app.config["MONGO_URI"] = os.environ.get('MONGOURI')
 
 '''global player variables'''
 disciplines=["points","rebounds","assists","steals","blocks","3-points_%","2-points_%","free_throws", "fouls_drawn"]
